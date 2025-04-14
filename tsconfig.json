@@ -20,16 +20,16 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/features/*": ["./src/features/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/api/*": ["./src/app/api/*"],
-      "@/constants/*": ["./src/constants/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/schemas/*": ["./src/schemas/*"],
-      "@/services/*": ["./src/services/*"],
-      "@/types/*": ["./src/types/*"],
-      "@/database/*": ["./database/*"],
-      "@/seed/*": ["./seed/*"]
+      "@features/*": ["./src/features/*"],
+      "@components/*": ["./src/components/*"],
+      "@api/*": ["./src/app/api/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@schemas/*": ["./src/schemas/*"],
+      "@services/*": ["./src/services/*"],
+      "@types/*": ["./src/types/*"],
+      "@database/*": ["./database/*"],
+      "@seed/*": ["./seed/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
