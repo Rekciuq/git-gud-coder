@@ -6,7 +6,8 @@
   box-sizing: border-box;
 }
 
-input, button {
+input,
+button {
   font-family: inherit;
 }
 

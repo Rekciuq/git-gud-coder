@@ -1,5 +1,13 @@
 import { z } from "zod";
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+} from "@/constants/schemas/auth/values";
 
-const emailSchema = z.string().email();
+const emailSchema = z
+  .string()
+  .email()
+  .min(MIN_PASSWORD_LENGTH)
+  .max(MAX_PASSWORD_LENGTH);
 
 export default emailSchema;

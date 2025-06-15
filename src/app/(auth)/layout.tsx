@@ -1,5 +1,5 @@
-const LoginLayout = async () => {
-  return <></>;
+const LoginLayout = async ({ children }) => {
+  return children;
 };
 
 export default LoginLayout;
