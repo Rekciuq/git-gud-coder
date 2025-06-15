@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
-import Providers from "@/components/features/setup/Providers";
 import Notify from "@/components/features/setup/Notify";
+import { TRPCReactProvider } from "@/lib/trpc/client/client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +30,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <TRPCReactProvider>{children}</TRPCReactProvider>
         <Notify />
       </body>
     </html>
