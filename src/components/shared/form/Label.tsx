@@ -7,7 +7,7 @@ type LabelProps = {
 };
 
 const Label = ({ name, className, text }: LabelProps) => {
-  const baseClassNames = "";
+  const baseClassNames = "text-primary-text mb-1";
   return (
     <label htmlFor={name} className={cn(baseClassNames, className)}>
       {text}

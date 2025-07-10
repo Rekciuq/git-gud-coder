@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import Notify from "@/components/features/setup/Notify";
 import { TRPCReactProvider } from "@/lib/trpc/client/client";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-get-brains-mono",
   subsets: ["latin"],
 });
 
@@ -26,10 +21,8 @@ export default async function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html className={`${jetBrainsMono.variable}`} lang="en">
+      <body className={`antialiased bg-background`}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
         <Notify />
       </body>

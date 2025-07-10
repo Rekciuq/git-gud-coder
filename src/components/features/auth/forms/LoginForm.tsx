@@ -3,7 +3,6 @@
 import PasswordField from "@/components/shared/form/fields/PasswordField";
 import TextField from "@/components/shared/form/fields/TextField";
 import Form from "@/components/shared/form/Form";
-import FormSubmitButton from "@/components/shared/form/FormSubmitButton";
 import { useTRPC } from "@/lib/trpc/client/client";
 import loginSchema from "@/schemas/auth/login/login.schema";
 import { useQuery } from "@tanstack/react-query";
@@ -19,10 +18,11 @@ const LoginForm = () => {
 
   return (
     <Form handleSubmit={handleSubmit} schema={loginSchema}>
-      <TextField name="login" label="Login:" />
-      <PasswordField name="password" label="Password:" />
-      <FormSubmitButton type="submit" />
-      <FormSubmitButton type="update" />
+      <div className="flex flex-col gap-4 mb-4">
+        <TextField name="login" label="Login:" />
+        <PasswordField name="password" label="Password:" />
+      </div>
+      <Form.Submit className="ml-auto" type="submit" />
     </Form>
   );
 };

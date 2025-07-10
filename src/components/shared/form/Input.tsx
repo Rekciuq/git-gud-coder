@@ -15,10 +15,16 @@ const Input = ({ name, type, className }: InputProps) => {
     register,
     formState: { errors },
   } = useFormContext();
-  const baseClassNames = cn("", errors[name] ? "border-something-red!!" : "");
+  const baseClassNames = cn(
+    "text-primary-text border border-2 appearance-none focus:outline-2 focus:-outline-offset-2",
+    errors[name]
+      ? "border-alert-error/50 focus:outline-alert-error"
+      : "border-primary-text/50 focus:outline-primary-text",
+  );
 
   return (
     <input
+      id={name}
       className={cn(baseClassNames, className)}
       type={type}
       {...register(name)}

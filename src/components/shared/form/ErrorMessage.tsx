@@ -12,7 +12,7 @@ const ErrorMessage = ({ name, className }: ErrorMessageProps) => {
   const {
     formState: { errors },
   } = useFormContext();
-  const baseClassNames = "";
+  const baseClassNames = "text-alert-error mb-1";
   return (
     <>
       {errors[name]?.message && (

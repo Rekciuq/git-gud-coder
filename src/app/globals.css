@@ -1,84 +1,40 @@
 @import "tailwindcss";
 
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-input,
-button {
-  font-family: inherit;
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-/* Light Theme — Latte */
-:root {
-  /* Backgrounds */
-  --background: #eff1f5; /* base */
-  --panel: #ccd0da; /* surface1 */
-
-  /* Text */
-  --text: #4c4f69; /* text */
-  --subtext: #6c6f85; /* subtext0 */
-
-  /* Buttons */
-  --button-primary: #1e66f5; /* blue */
-  --button-secondary: #acb0be; /* surface2 */
-  --button-secondary-text: #4c4f69;
-
-  /* Links */
-  --link: #1e66f5; /* blue */
-  --link-alt: #209fb5; /* sapphire */
-
-  /* Alerts */
-  --alert-warning: #df8e1d; /* yellow */
-  --alert-error: #d20f39; /* red */
-  --alert-peach: #fe640b; /* peach */
-
-  /* Success */
-  --success: #40a02b; /* green */
-  --success-alt: #179299; /* teal */
-
-  /* Highlights */
-  --highlight: #ea76cb; /* pink */
-  --highlight-alt: #8839ef; /* mauve */
-  --highlight-soft: #dc8a78; /* rosewater */
-}
-
 /* Dark Theme — Mocha */
-.dark {
+@theme {
   /* Backgrounds */
-  --background: #1e1e2e; /* base */
-  --panel: #313244; /* surface0 or surface1 */
+  --color-background: #1e1e2e; /* base */
+  --color-panel: #313244; /* surface0 or surface1 */
 
   /* Text */
-  --text: #cdd6f4; /* text */
-  --subtext: #bac2de; /* subtext1 */
+  --color-primary-text: #cdd6f4; /* text */
+  --color-secondary-text: #bac2de; /* subtext1 */
 
   /* Buttons */
-  --button-primary: #89b4fa; /* blue */
-  --button-secondary: #585b70; /* surface2 */
-  --button-secondary-text: #cdd6f4;
+  --color-button-primary: #89b4fa; /* blue */
+  --color-button-secondary: #585b70; /* surface2 */
+  --color-button-secondary-text: #cdd6f4;
 
   /* Links */
-  --link: #89b4fa; /* blue */
-  --link-alt: #74c7ec; /* sapphire */
+  --color-link: #89b4fa; /* blue */
+  --color-link-alt: #74c7ec; /* sapphire */
 
   /* Alerts */
-  --alert-warning: #f9e2af; /* yellow */
-  --alert-error: #f38ba8; /* red */
-  --alert-peach: #fab387; /* peach */
+  --color-alert-warning: #f9e2af; /* yellow */
+  --color-alert-error: #f38ba8; /* red */
+  --color-alert-peach: #fab387; /* peach */
 
   /* Success */
-  --success: #a6e3a1; /* green */
-  --success-alt: #94e2d5; /* teal */
+  --color-success: #a6e3a1; /* green */
+  --color-success-alt: #94e2d5; /* teal */
 
   /* Highlights */
-  --highlight: #f5c2e7; /* pink */
-  --highlight-alt: #cba6f7; /* mauve */
-  --highlight-soft: #f5e0dc; /* rosewater */
+  --color-highlight: #f5c2e7; /* pink */
+  --color-highlight-alt: #cba6f7; /* mauve */
+  --color-highlight-soft: #f5e0dc; /* rosewater */
+}
+
+* {
+  box-sizing: border-box;
+  font-family: var(--font-get-brains-mono);
 }
