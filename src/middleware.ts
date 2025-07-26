@@ -10,6 +10,10 @@ export const middleware = async (request: NextRequest) => {
   const accessToken = request.cookies.get(ACCESS_TOKEN)?.value;
   const refreshToken = request.cookies.get(REFRESH_TOKEN)?.value;
 
+  if ((!accessToken || !refreshToken) && publicPaths.has(pathname)) {
+    return NextResponse.next();
+  }
+
   if ((!accessToken || !refreshToken) && !publicPaths.has(pathname)) {
     return NextResponse.redirect(new URL("/login", request.url));
   }

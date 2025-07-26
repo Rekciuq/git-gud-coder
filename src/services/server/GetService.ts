@@ -2,7 +2,7 @@ import { handlePromiseServer } from "@/helpers/handlePromiseServer";
 import prisma from "@/lib/prisma";
 
 class GetService {
-  static getUserCredentialsByLogin = async (login: string) =>
+  static getUserCredentialsByLogin = (login: string) =>
     handlePromiseServer(() =>
       prisma.user.findUnique({
         where: {
@@ -12,6 +12,25 @@ class GetService {
           id: true,
           password: true,
           roleId: true,
+        },
+      }),
+    );
+  static getUserById = (userId: number) =>
+    handlePromiseServer(() =>
+      prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          roleId: true,
+          image: {
+            select: {
+              url: true,
+            },
+          },
         },
       }),
     );
