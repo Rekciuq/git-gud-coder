@@ -43,8 +43,7 @@ next-env.d.ts
 # database
 database/*
 
-# images and videos
-public/uploads/*
-
+# bucket
+/bucket/go-bucket-app
 
 /src/generated/prisma
