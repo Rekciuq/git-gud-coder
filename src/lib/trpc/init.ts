@@ -19,17 +19,19 @@ const t = initTRPC.context<Context>().create({
 export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
 export const publicProcedure = t.procedure;
-export const privateProcedure = publicProcedure.use(async (opts) => {
+const middleware = { ...publicProcedure };
+export const privateProcedure = middleware.use(async (opts) => {
   const { ctx } = opts;
 
   const cookies = parse(ctx.headers.get("Cookie") || "");
   const accessToken = cookies[ACCESS_TOKEN];
   const refreshToken = cookies[REFRESH_TOKEN];
-  if (!accessToken || !refreshToken)
+  if (!accessToken || !refreshToken) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "You are not logged in",
     });
+  }
 
   const jwtService = new JWTTokenService();
 
@@ -79,8 +81,8 @@ export const privateProcedure = publicProcedure.use(async (opts) => {
     path: "/",
   });
 
-  ctx.headers.append("Set-Cookie", newAccessTokenCookie);
-  ctx.headers.append("Set-Cookie", newRefreshTokenCookie);
+  ctx.responseHeaders.append("Set-Cookie", newAccessTokenCookie);
+  ctx.responseHeaders.append("Set-Cookie", newRefreshTokenCookie);
 
   return opts.next({
     ctx: {

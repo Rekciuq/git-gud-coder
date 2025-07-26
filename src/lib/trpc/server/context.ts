@@ -3,6 +3,7 @@ import { type FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 export const createContextInner = (opts: { headers: Headers }) => {
   return {
     headers: opts.headers,
+    responseHeaders: new Headers(),
   };
 };
 

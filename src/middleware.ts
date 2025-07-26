@@ -35,7 +35,12 @@ export const middleware = async (request: NextRequest) => {
     await jwtService.verifyToken(refreshToken || "", REFRESH_TOKEN);
 
   if (refreshTokenError) {
-    return NextResponse.redirect(new URL("/logout", request.url));
+    const response = NextResponse.redirect(new URL("/login", request.url));
+
+    response.cookies.delete(ACCESS_TOKEN);
+    response.cookies.delete(REFRESH_TOKEN);
+
+    return response;
   }
 
   if (verifiedRefreshToken) {

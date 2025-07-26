@@ -23,7 +23,13 @@ const SignupForm = () => {
   });
 
   const { mutate: signupUser } = useMutation(
-    trpc.auth.signup.mutationOptions(),
+    trpc.auth.signup.mutationOptions({
+      onError(error) {
+        console.error(error.message);
+        console.error(error.data);
+        console.error(error.shape);
+      },
+    }),
   );
 
   const roles: RadioOptions = [

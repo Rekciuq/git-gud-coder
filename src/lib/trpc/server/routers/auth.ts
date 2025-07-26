@@ -1,4 +1,8 @@
-import { publicProcedure, createTRPCRouter } from "../../init";
+import {
+  publicProcedure,
+  createTRPCRouter,
+  privateProcedure,
+} from "../../init";
 import { serverSignupSchema } from "@/schemas/auth/login/signup.schema";
 import CreateService from "@/services/server/CreateService";
 import bcrypt from "bcrypt";
@@ -35,7 +39,6 @@ const setJWTTokens = async (
   [accessTokenCookie, refreshTokenCookie].map((token) =>
     context.headers.append("Set-Cookie", token),
   );
-  console.log(context.headers);
 
   return refreshToken;
 };
@@ -118,5 +121,9 @@ export const authRouter = createTRPCRouter({
     // await CreateService.createSession(credentials.id, refreshToken);
 
     return res;
+  }),
+  logout: privateProcedure.query(async (opts) => {
+    opts.ctx.headers.delete(ACCESS_TOKEN);
+    opts.ctx.headers.delete(REFRESH_TOKEN);
   }),
 });

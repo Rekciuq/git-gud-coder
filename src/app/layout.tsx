@@ -7,6 +7,7 @@ import { TRPCReactProvider } from "@/lib/trpc/client/client";
 import { cookies } from "next/headers";
 import { appRouter } from "@/lib/trpc/server/_app";
 import UserProvider from "@/context/UserProvider";
+import { ACCESS_TOKEN } from "@/constants/server/jwt";
 
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-get-brains-mono",
@@ -23,20 +24,26 @@ export default async function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const requestHeaders = new Headers();
+  const cookieStore = await cookies();
 
-  const cookie = await cookies();
-  if (cookie) {
-    requestHeaders.set("Cookie", cookie.toString());
+  const requestHeaders = new Headers();
+  const accessToken = cookieStore.get(ACCESS_TOKEN);
+
+  if (cookieStore) {
+    const cookieString = cookieStore
+      .getAll()
+      .map(({ name, value }) => `${name}=${value}`)
+      .join("; ");
+
+    requestHeaders.set("Cookie", cookieString);
   }
 
   const caller = appRouter.createCaller({
     headers: requestHeaders,
+    responseHeaders: new Headers(),
   });
 
-  const user = !!(cookie?.toString() !== "")
-    ? await caller.user.getUser()
-    : null;
+  const user = accessToken ? await caller.user.getUser() : null;
 
   return (
     <html className={`${jetBrainsMono.variable}`} lang="en">

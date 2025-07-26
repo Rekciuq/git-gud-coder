@@ -8,10 +8,22 @@ import { useMutation } from "@tanstack/react-query";
 const LoginForm = () => {
   const trpc = useTRPC();
 
-  const { mutate } = useMutation(trpc.auth.login.mutationOptions());
+  const { mutate } = useMutation(
+    trpc.auth.login.mutationOptions({
+      onError(error, v, c) {
+        console.error(error.data);
+        console.error(error.message);
+        console.error(error.shape);
+        console.error(v);
+        console.error(c);
+      },
+    }),
+  );
+
   return (
     <Form
       handleSubmit={(values) => {
+        console.log(values);
         mutate(values);
       }}
       schema={loginSchema}

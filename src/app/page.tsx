@@ -2,6 +2,7 @@
 
 import { useUserStore } from "@/context/UserProvider";
 import { useTRPC } from "@/lib/trpc/client/client";
+import { logoutAction } from "@/serverActions/logout";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
@@ -22,6 +23,7 @@ export default function Home() {
 
   return (
     <>
+      <button onClick={() => logoutAction()}>Im here</button>
       <p>{user?.email}</p>
       <p>{user?.firstName}</p>
     </>
