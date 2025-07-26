@@ -9,6 +9,7 @@ import {
   clientSignupSchema,
   serverSignupSchema,
 } from "@/schemas/auth/login/signup.schema";
+import ToastEmitter from "@/services/client/ToastEmitter";
 import { RadioOptions } from "@/types/shared/form/field";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { z } from "zod";
@@ -60,15 +61,9 @@ const SignupForm = () => {
 
           signupUser(newUser);
         } catch (error) {
-          if (
-            typeof error === "object" &&
-            error !== null &&
-            "message" in error
-          ) {
-            console.error(error.message);
-          } else {
-            console.error(error);
-          }
+          if (!(error instanceof Error)) return;
+
+          ToastEmitter.error(error.message);
         }
       }}
       schema={clientSignupSchema}

@@ -5,13 +5,13 @@ const Notify = () => (
     position="top-right"
     autoClose={5000}
     hideProgressBar={false}
-    newestOnTop={false}
+    newestOnTop={true}
     closeOnClick={false}
     rtl={false}
     pauseOnFocusLoss
     draggable
     pauseOnHover
-    theme="light"
+    theme="dark"
     transition={Bounce}
   />
 );

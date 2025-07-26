@@ -1,3 +1,4 @@
+import ToastEmitter from "@/services/client/ToastEmitter";
 import {
   defaultShouldDehydrateQuery,
   QueryClient,
@@ -9,7 +10,7 @@ export function makeQueryClient() {
     defaultOptions: {
       mutations: {
         onError(error) {
-          console.error(error.message);
+          ToastEmitter.error(error.message);
         },
       },
       queries: {

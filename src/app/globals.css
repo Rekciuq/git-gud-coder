@@ -34,6 +34,17 @@
   --color-highlight-soft: #f5e0dc; /* rosewater */
 }
 
+:root {
+  --toastify-color-error: #f38ba8;
+  --toastify-icon-color-error: var(--toastify-color-error);
+  --toastify-text-color-dark: #cdd6f4;
+  --toastify-color-dark: #222237;
+}
+
+.Toastify__close-button {
+  color: #cdd6f4;
+}
+
 * {
   box-sizing: border-box;
   font-family: var(--font-get-brains-mono);
