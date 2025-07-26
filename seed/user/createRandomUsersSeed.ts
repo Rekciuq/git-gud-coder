@@ -20,7 +20,7 @@ export const createRandomUsersSeed = async () => {
     const email = faker.internet.email({
       firstName,
       lastName,
-      provider: "@example.com",
+      provider: "example.com",
     });
     const password = faker.internet.password();
 

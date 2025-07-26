@@ -1,4 +1,4 @@
-import { baseProcedure, createTRPCRouter } from "../../init";
+import { publicProcedure, createTRPCRouter } from "../../init";
 import { serverSignupSchema } from "@/schemas/auth/login/signup.schema";
 import CreateService from "@/services/server/CreateService";
 import bcrypt from "bcrypt";
@@ -6,9 +6,41 @@ import { TRPCError } from "@trpc/server";
 import { FETCH_IMAGE_ERROR } from "@/constants/fetch";
 import loginSchema from "@/schemas/auth/login/login.schema";
 import GetService from "@/services/server/GetService";
+import JWTTokenService from "@/services/server/JWTTokenService";
+import { serialize } from "cookie";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "@/constants/server/jwt";
+import { Context } from "../context";
+
+const setJWTTokens = async (
+  credentials: { id: number; roleId: number },
+  context: Context,
+) => {
+  const jwtService = new JWTTokenService();
+  const { accessToken, refreshToken } = jwtService.generateTokens(
+    credentials.id,
+    credentials.roleId,
+  );
+  const [acToken, reToken] = await Promise.all([accessToken, refreshToken]);
+
+  const accessTokenCookie = serialize(ACCESS_TOKEN, acToken, {
+    httpOnly: true,
+    path: "/",
+  });
+
+  const refreshTokenCookie = serialize(REFRESH_TOKEN, reToken, {
+    httpOnly: true,
+    path: "/",
+  });
+
+  [accessTokenCookie, refreshTokenCookie].map((token) =>
+    context.resHeaders.append("Set-Cookie", token),
+  );
+
+  return refreshToken;
+};
 
 export const authRouter = createTRPCRouter({
-  login: baseProcedure.input(loginSchema).mutation(async (opts) => {
+  login: publicProcedure.input(loginSchema).mutation(async (opts) => {
     const data = opts.input;
 
     const [err, credentials] = await GetService.getUserCredentialsByLogin(
@@ -33,8 +65,13 @@ export const authRouter = createTRPCRouter({
         message: "Login or Password is incorrect",
       });
     }
+
+    await setJWTTokens(credentials, opts.ctx);
+    // const refreshToken = await setJWTTokens(credentials, opts.ctx);
+
+    // await CreateService.createSession(credentials.id, refreshToken);
   }),
-  signup: baseProcedure.input(serverSignupSchema).mutation(async (opts) => {
+  signup: publicProcedure.input(serverSignupSchema).mutation(async (opts) => {
     const data = opts.input;
     const bucketImageId = data.imageUrl.split("/").at(-1);
 
@@ -61,6 +98,23 @@ export const authRouter = createTRPCRouter({
         message: err,
       });
     }
+
+    if (!res?.id || !res?.roleId) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Unexpected error creating user",
+      });
+    }
+
+    const credentials = {
+      id: res?.id,
+      roleId: res?.roleId,
+    };
+
+    await setJWTTokens(credentials, opts.ctx);
+    // const refreshToken = await setJWTTokens(credentials, opts.ctx);
+
+    // await CreateService.createSession(credentials.id, refreshToken);
 
     return res;
   }),

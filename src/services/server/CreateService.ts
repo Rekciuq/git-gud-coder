@@ -4,7 +4,7 @@ import { serverSignupSchema } from "@/schemas/auth/login/signup.schema";
 import { z } from "zod";
 
 class CreateService {
-  static createUserWithImage = async ({
+  static createUserWithImage = ({
     imageUrl,
     bucketImageId,
     ...user
@@ -27,6 +27,15 @@ class CreateService {
               bucketImageId,
             },
           },
+        },
+      }),
+    );
+  static createSession = (userId: number, refreshToken: string) =>
+    handlePromiseServer(() =>
+      prisma.session.create({
+        data: {
+          refreshToken,
+          userId,
         },
       }),
     );

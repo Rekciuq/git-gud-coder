@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { baseProcedure, createTRPCRouter } from "../../init";
+import { publicProcedure, createTRPCRouter } from "../../init";
 
 export const imageRouter = createTRPCRouter({
-  getPresignedUrl: baseProcedure.mutation(async () => {
+  getPresignedUrl: publicProcedure.mutation(async () => {
     const link = "http://localhost:6969/v1/upload";
     const response = await fetch(link, {
       method: "GET",
@@ -18,7 +18,7 @@ export const imageRouter = createTRPCRouter({
 
     return { url: body.url };
   }),
-  uploadImage: baseProcedure
+  uploadImage: publicProcedure
     .input(z.object({ userId: z.number(), image: z.any() }))
     .mutation((opts) => {
       console.log("I'm here");

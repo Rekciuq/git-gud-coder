@@ -11,6 +11,7 @@ class GetService {
         select: {
           id: true,
           password: true,
+          roleId: true,
         },
       }),
     );
