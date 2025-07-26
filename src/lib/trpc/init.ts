@@ -22,7 +22,7 @@ export const publicProcedure = t.procedure;
 export const privateProcedure = publicProcedure.use(async (opts) => {
   const { ctx } = opts;
 
-  const cookies = parse(opts.ctx.headers.get("Cookie") || "");
+  const cookies = parse(ctx.headers.get("Cookie") || "");
   const accessToken = cookies[ACCESS_TOKEN];
   const refreshToken = cookies[REFRESH_TOKEN];
   if (!accessToken || !refreshToken)
@@ -42,7 +42,7 @@ export const privateProcedure = publicProcedure.use(async (opts) => {
     const { userId, roleId } = verifiedAccessToken!.payload;
     return opts.next({
       ctx: {
-        headers: opts.ctx.headers,
+        headers: ctx.headers,
         user: {
           id: userId,
           roleId: roleId,
@@ -79,12 +79,12 @@ export const privateProcedure = publicProcedure.use(async (opts) => {
     path: "/",
   });
 
-  opts.ctx.headers.append("Set-Cookie", newAccessTokenCookie);
-  opts.ctx.headers.append("Set-Cookie", newRefreshTokenCookie);
+  ctx.headers.append("Set-Cookie", newAccessTokenCookie);
+  ctx.headers.append("Set-Cookie", newRefreshTokenCookie);
 
   return opts.next({
     ctx: {
-      headers: opts.ctx.headers,
+      headers: ctx.headers,
       user: {
         id: userId,
         roleId: roleId,
