@@ -11,7 +11,6 @@ import {
 } from "@/schemas/auth/login/signup.schema";
 import { RadioOptions } from "@/types/shared/form/field";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 const SignupForm = () => {
@@ -23,11 +22,7 @@ const SignupForm = () => {
   });
 
   const { mutate: signupUser } = useMutation(
-    trpc.auth.signup.mutationOptions({
-      onError(error) {
-        console.error(error);
-      },
-    }),
+    trpc.auth.signup.mutationOptions(),
   );
 
   const roles: RadioOptions = [
@@ -65,10 +60,15 @@ const SignupForm = () => {
 
           signupUser(newUser);
         } catch (error) {
-          if (error instanceof TRPCError) {
+          if (
+            typeof error === "object" &&
+            error !== null &&
+            "message" in error
+          ) {
             console.error(error.message);
+          } else {
+            console.error(error);
           }
-          console.error(error);
         }
       }}
       schema={clientSignupSchema}

@@ -8,16 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 const LoginForm = () => {
   const trpc = useTRPC();
 
-  const { mutate } = useMutation(
-    trpc.auth.login.mutationOptions({
-      onSuccess(data) {
-        console.log("Success");
-      },
-      onError(error) {
-        console.error(error);
-      },
-    }),
-  );
+  const { mutate } = useMutation(trpc.auth.login.mutationOptions());
   return (
     <Form
       handleSubmit={(values) => {
