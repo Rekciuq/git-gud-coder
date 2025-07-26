@@ -33,12 +33,20 @@ export const privateProcedure = publicProcedure.use(async (opts) => {
 
   const jwtService = new JWTTokenService();
 
-  const [error] = await jwtService.verifyToken(accessToken || "", ACCESS_TOKEN);
+  const [error, verifiedAccessToken] = await jwtService.verifyToken(
+    accessToken || "",
+    ACCESS_TOKEN,
+  );
 
   if (!error) {
+    const { userId, roleId } = verifiedAccessToken!.payload;
     return opts.next({
       ctx: {
-        headers: ctx.headers,
+        headers: opts.ctx.headers,
+        user: {
+          id: userId,
+          roleId: roleId,
+        },
       },
     });
   }
