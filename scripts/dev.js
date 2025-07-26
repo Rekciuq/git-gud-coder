@@ -31,9 +31,13 @@ const bucketProcess = spawn(runBinary, [], {
   cwd: nameSpace,
 });
 
-const nextProcess = spawn(isWindows ? "npm.cmd" : "npm", ["run", "dev"], {
-  stdio: "inherit",
-});
+const nextProcess = spawn(
+  isWindows ? "npm.cmd" : "npm",
+  ["run", "node-run-dev"],
+  {
+    stdio: "inherit",
+  },
+);
 
 function cleanup() {
   console.log("Shutting down child processes...");

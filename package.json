@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "setup-env": "node scripts/generateSecretKeys.js",
-    "node-run-dev": "node scripts/dev.js",
-    "dev": "next dev --turbopack",
+    "node-run-dev": "next dev --turbopack",
+    "dev": "node scripts/dev.js",
     "reset-bucket-data": "node scripts/resetBucketDirectories.js",
     "reset-db": "npx prisma migrate reset --force",
     "seed-db": "npx prisma db seed",

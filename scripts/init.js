@@ -45,7 +45,7 @@ async function main() {
     await runCommand(npmCmd, ["run", "reset-bucket-data"]);
 
     console.log("Starting the development server in the background...");
-    devServerProcess = spawn(npmCmd, ["run", "node-run-dev"]);
+    devServerProcess = spawn(npmCmd, ["run", "dev"]);
 
     devServerProcess.stdout.on("data", () => {});
     devServerProcess.stderr.on("data", (data) => {
@@ -68,7 +68,7 @@ async function main() {
       devServerProcess.kill();
       console.log("Initialization complete.");
       console.log(
-        "You can now start the server for development with: npm run node-run-dev",
+        "You can now start the server for development with: npm run dev",
       );
     }
   }

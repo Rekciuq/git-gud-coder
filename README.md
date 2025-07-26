@@ -16,6 +16,8 @@ You need to pull this github repo:
 
 Then you can actually initialize the project with the script
 
+(run the script from root project directory)
+
 ```bash
 npm run init
 # or
