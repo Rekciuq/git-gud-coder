@@ -8,7 +8,7 @@ import { parse } from "cookie";
 export const userRouter = createTRPCRouter({
   getUser: privateProcedure.query(async (opts) => {
     const jwtService = new JWTTokenService();
-    const cookies = parse(opts.ctx.req.headers.get("Cookie") || "");
+    const cookies = parse(opts.ctx.headers.get("Cookie") || "");
     const accessToken = cookies[ACCESS_TOKEN];
 
     if (!accessToken) {

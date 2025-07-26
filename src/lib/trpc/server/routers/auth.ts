@@ -33,8 +33,9 @@ const setJWTTokens = async (
   });
 
   [accessTokenCookie, refreshTokenCookie].map((token) =>
-    context.resHeaders.append("Set-Cookie", token),
+    context.headers.append("Set-Cookie", token),
   );
+  console.log(context.headers);
 
   return refreshToken;
 };

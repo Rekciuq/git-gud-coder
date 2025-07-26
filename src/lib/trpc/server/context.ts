@@ -1,10 +1,15 @@
 import { type FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 
-export const createContext = (opts: FetchCreateContextFnOptions) => {
+export const createContextInner = (opts: { headers: Headers }) => {
   return {
-    req: opts.req,
-    resHeaders: opts.resHeaders,
+    headers: opts.headers,
   };
 };
 
-export type Context = Awaited<ReturnType<typeof createContext>>;
+export const createContext = (opts: FetchCreateContextFnOptions) => {
+  return createContextInner({
+    headers: opts.req.headers,
+  });
+};
+
+export type Context = Awaited<ReturnType<typeof createContextInner>>;

@@ -14,7 +14,7 @@ type SharedUser = {
 
 type UserStore = {
   user: SharedUser;
-  updateUser: () => void;
+  updateUser: (user: SharedUser) => void;
 };
 
 const UserContext = createContext<StoreApi<UserStore> | undefined>(undefined);
@@ -30,7 +30,7 @@ export default function UserProvider({
   const [store] = useState(() =>
     createStore<UserStore>((set) => ({
       user: initialUser,
-      updateUser: () => set((state) => state),
+      updateUser: (user: SharedUser) => set((state) => ({ ...state, user })),
     })),
   );
 

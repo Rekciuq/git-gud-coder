@@ -31,8 +31,7 @@ export default async function RootLayout({
   }
 
   const caller = appRouter.createCaller({
-    req: { headers: requestHeaders } as Request,
-    resHeaders: new Headers(),
+    headers: requestHeaders,
   });
 
   const user = !!(cookie?.toString() !== "")

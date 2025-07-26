@@ -13,12 +13,11 @@ export const appRouter = createTRPCRouter({
 });
 
 export const responseMeta: ResponseMetaFn<AppRouter> = ({ ctx, errors }) => {
-  if (ctx?.resHeaders && errors.length === 0) {
+  if (ctx?.headers && errors.length === 0) {
     return {
-      headers: ctx.resHeaders,
+      headers: ctx.headers,
     };
   }
-
   return {};
 };
 
