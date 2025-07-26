@@ -6,6 +6,8 @@ import { z, ZodSchema } from "zod";
 import FormSubmitButton from "./FormSubmitButton";
 import TextField from "./fields/TextField";
 import PasswordField from "./fields/PasswordField";
+import ImageField from "./fields/ImageField";
+import RadioField from "./fields/RadioField";
 
 type FormProps<T extends ZodSchema> = {
   handleSubmit: SubmitHandler<z.infer<T>>;
@@ -23,7 +25,7 @@ const Form = <T extends ZodSchema>({
   className,
 }: FormProps<T>) => {
   const methods = useForm<z.infer<T>>({
-    resolver: zodResolver(schema, {}, { mode: "sync", raw: true }),
+    resolver: zodResolver(schema, {}, { mode: "sync" }),
     mode: "all",
     defaultValues,
   });
@@ -38,6 +40,8 @@ const Form = <T extends ZodSchema>({
 
 Form.TextField = TextField;
 Form.PasswordField = PasswordField;
+Form.ImageField = ImageField;
+Form.RadioField = RadioField;
 Form.Submit = FormSubmitButton;
 
 export default Form;

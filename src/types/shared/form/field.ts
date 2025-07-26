@@ -3,3 +3,9 @@ export type CommonFieldProps = {
   label: string;
   className?: string;
 };
+
+export type RadioOptions = { title: string; value: string }[];
+
+export type RadioFieldProps = {
+  options: RadioOptions;
+} & CommonFieldProps;

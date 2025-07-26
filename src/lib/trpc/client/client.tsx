@@ -3,7 +3,13 @@
 
 import type { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import {
+  createTRPCClient,
+  httpBatchLink,
+  httpLink,
+  isNonJsonSerializable,
+  splitLink,
+} from "@trpc/client";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 import { useState } from "react";
 import { makeQueryClient } from "./query-client";
@@ -27,7 +33,7 @@ export function getQueryClient() {
   return browserQueryClient;
 }
 
-function getUrl() {
+export function getUrl() {
   const base = (() => {
     if (typeof window !== "undefined") return "";
     if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
@@ -45,13 +51,24 @@ export function TRPCReactProvider(
   //       have a suspense boundary between this and the code that may
   //       suspend because React will throw away the client on the initial
   //       render if it suspends and there is no boundary
+  const url = getUrl();
   const queryClient = getQueryClient();
   const [trpcClient] = useState(() =>
     createTRPCClient<AppRouter>({
       links: [
-        httpBatchLink({
-          transformer: SuperJSON,
-          url: getUrl(),
+        splitLink({
+          condition: (op) => isNonJsonSerializable(op.input),
+          true: httpLink({
+            url,
+            transformer: {
+              serialize: (data) => data,
+              deserialize: SuperJSON.deserialize,
+            },
+          }),
+          false: httpBatchLink({
+            transformer: SuperJSON,
+            url,
+          }),
         }),
       ],
     }),

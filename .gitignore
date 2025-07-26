@@ -46,3 +46,5 @@ database/*
 # images and videos
 public/uploads/*
 
+
+/src/generated/prisma

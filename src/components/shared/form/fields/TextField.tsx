@@ -10,7 +10,7 @@ const TextField = ({ name, label, className }: CommonFieldProps) => {
     <div className={cn(baseClassNames, className)}>
       <Label name={name} text={label} />
       <ErrorMessage name={name} />
-      <Input name={name} type="text" />
+      <Input autoComplete="username" name={name} type="text" />
     </div>
   );
 };

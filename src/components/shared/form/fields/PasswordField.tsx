@@ -4,7 +4,7 @@ import Input from "../Input";
 import Label from "../Label";
 import { CommonFieldProps } from "@/types/shared/form/field";
 import Eye from "@/components/icons/Eye";
-import CrossedEye from "@/components/icons/CrossedEye";
+import ShutEye from "@/components/icons/ShutEye";
 import { useState } from "react";
 
 const PasswordField = ({ name, label, className }: CommonFieldProps) => {
@@ -16,6 +16,7 @@ const PasswordField = ({ name, label, className }: CommonFieldProps) => {
       <ErrorMessage name={name} />
       <div className="relative flex justify-center items-center">
         <Input
+          autoComplete="current-password"
           className="w-full"
           name={name}
           type={showPassword ? "text" : "password"}
@@ -23,14 +24,14 @@ const PasswordField = ({ name, label, className }: CommonFieldProps) => {
         <div
           className={cn(
             baseClassNames,
-            "bg-background absolute right-0.5 cursor-pointer p-0.75",
+            "bg-background absolute right-1.5 cursor-pointer p-0.75",
           )}
           onClick={() => setShowPassword(!showPassword)}
         >
           {showPassword ? (
             <Eye className="h-4 w-4 stroke-primary-text" />
           ) : (
-            <CrossedEye className="h-4 w-4 stroke-primary-text" />
+            <ShutEye className="h-4 w-4 stroke-primary-text" />
           )}
         </div>
       </div>
