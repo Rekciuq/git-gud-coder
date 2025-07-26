@@ -2,14 +2,15 @@
   "name": "git-gud-coder",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "setup-env": "node scripts/generateSecretKeys.js",
-    "node-run-dev": "node scripts/nodeStartDevServer.js",
-    "node-kill-dev": "node scripts/nodeStopDevServer.js",
-    "init": "npm ci && npm run setup-env && npm run node-run-dev",
+    "node-run-dev": "node scripts/dev.js",
     "dev": "next dev --turbopack",
+    "reset-bucket-data": "node scripts/resetBucketDirectories.js",
     "reset-db": "npx prisma migrate reset --force",
-    "seed-db": "npx prisma db seed"
+    "seed-db": "npx prisma db seed",
+    "init": "node scripts/init.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
