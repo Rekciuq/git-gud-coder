@@ -1,15 +1,39 @@
-import { z } from "zod";
 import { baseProcedure, createTRPCRouter } from "../../init";
 import { serverSignupSchema } from "@/schemas/auth/login/signup.schema";
 import CreateService from "@/services/server/CreateService";
 import bcrypt from "bcrypt";
 import { TRPCError } from "@trpc/server";
 import { FETCH_IMAGE_ERROR } from "@/constants/fetch";
+import loginSchema from "@/schemas/auth/login/login.schema";
+import GetService from "@/services/server/GetService";
 
 export const authRouter = createTRPCRouter({
-  getUser: baseProcedure
-    .input(z.string())
-    .query((opts) => ({ greeting: `Hello ${opts.input}` })),
+  login: baseProcedure.input(loginSchema).mutation(async (opts) => {
+    const data = opts.input;
+
+    const [err, credentials] = await GetService.getUserCredentialsByLogin(
+      data.login,
+    );
+
+    if (err || !credentials?.password) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Requested user does not exists",
+      });
+    }
+
+    const isPasswordsMatching = bcrypt.compareSync(
+      data.password,
+      credentials.password,
+    );
+
+    if (!isPasswordsMatching) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Login or Password is incorrect",
+      });
+    }
+  }),
   signup: baseProcedure.input(serverSignupSchema).mutation(async (opts) => {
     const data = opts.input;
     const bucketImageId = data.imageUrl.split("/").at(-1);
