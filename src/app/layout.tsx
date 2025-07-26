@@ -25,9 +25,9 @@ export default async function RootLayout({
 }>) {
   const requestHeaders = new Headers();
 
-  const cookieString = cookies().toString();
-  if (cookieString) {
-    requestHeaders.set("Cookie", cookieString);
+  const cookie = await cookies();
+  if (cookie) {
+    requestHeaders.set("Cookie", cookie.toString());
   }
 
   const caller = appRouter.createCaller({
@@ -35,13 +35,19 @@ export default async function RootLayout({
     resHeaders: new Headers(),
   });
 
-  const user = await caller.user.getUser();
+  const user = !!(cookie?.toString() !== "")
+    ? await caller.user.getUser()
+    : null;
 
   return (
     <html className={`${jetBrainsMono.variable}`} lang="en">
       <body className={`antialiased bg-background`}>
         <TRPCReactProvider>
-          <UserProvider initialUser={user}>{children}</UserProvider>
+          {user ? (
+            <UserProvider initialUser={user}>{children}</UserProvider>
+          ) : (
+            <>{children}</>
+          )}
         </TRPCReactProvider>
         <Notify />
       </body>

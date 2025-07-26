@@ -33,6 +33,7 @@ export default function UserProvider({
       updateUser: () => set((state) => state),
     })),
   );
+
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;
 }
 
