@@ -8,7 +8,7 @@ You need to pull this github repo:
 <https://github.com/Rekciuq/go-bucket>
 
 1. you need to cd into directory of this repo
-2. you need to run this: go build -o go-bucket-app ./cmd/go-bucket/main.go
+2. you need to run this: `go build -o go-bucket-app ./cmd/go-bucket/main.go`
 3. move the output file named "go-bucket-app" to main repo /bucket/ directory
 4. to run project you need to install ffmpeg to convert images and videos and enable streaming
 
