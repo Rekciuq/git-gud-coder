@@ -5,6 +5,7 @@
   /* Backgrounds */
   --color-background: #1e1e2e; /* base */
   --color-panel: #313244; /* surface0 or surface1 */
+  --color-panel-alt: #222237;
 
   /* Text */
   --color-primary-text: #cdd6f4; /* text */

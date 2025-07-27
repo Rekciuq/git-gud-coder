@@ -24,7 +24,7 @@ const SignupForm = () => {
     enabled: false,
   });
 
-  const { mutate: signupUser } = useMutation(
+  const { mutate: signupUser, isPending } = useMutation(
     trpc.auth.signup.mutationOptions({
       onMutate() {
         router.refresh();
@@ -84,7 +84,7 @@ const SignupForm = () => {
         <Form.PasswordField name="password" label="Password:" />
         <Form.PasswordField name="confirmPassword" label="Confirm Password:" />
       </div>
-      <Form.Submit className="ml-auto" type="submit" />
+      <Form.Submit isLoading={isPending} className="ml-auto" type="submit" />
     </Form>
   );
 };

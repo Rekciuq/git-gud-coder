@@ -23,7 +23,6 @@ const LoginForm = () => {
   return (
     <Form
       handleSubmit={(values) => {
-        console.log(values);
         mutate(values);
       }}
       schema={loginSchema}

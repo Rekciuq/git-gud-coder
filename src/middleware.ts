@@ -26,7 +26,7 @@ export const middleware = async (request: NextRequest) => {
 
   if (verifiedAccessToken !== null) {
     if (publicPaths.has(pathname))
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/dashboard", request.url));
 
     return NextResponse.next();
   }
