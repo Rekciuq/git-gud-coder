@@ -5,9 +5,14 @@ import { ButtonTypes } from "@/types/shared/button";
 type FormSubmitButtonProps = {
   type: ButtonTypes;
   className?: string;
+  isLoading?: boolean;
 };
 
-const FormSubmitButton = ({ type, className }: FormSubmitButtonProps) => {
+const FormSubmitButton = ({
+  type,
+  className,
+  isLoading,
+}: FormSubmitButtonProps) => {
   const { isSubmitting } = useFormState();
 
   const typeHandler: Record<ButtonTypes, string> = {
@@ -20,7 +25,7 @@ const FormSubmitButton = ({ type, className }: FormSubmitButtonProps) => {
     <Button
       className={className}
       type={type}
-      isLoading={isSubmitting}
+      isLoading={isSubmitting || isLoading}
       label={typeHandler[type]}
     />
   );

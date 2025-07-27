@@ -1,3 +1,4 @@
+import ToastEmitter from "@/services/client/ToastEmitter";
 import {
   defaultShouldDehydrateQuery,
   QueryClient,
@@ -9,6 +10,11 @@ export function makeQueryClient() {
     defaultOptions: {
       queries: {
         staleTime: 30 * 1000,
+      },
+      mutations: {
+        onError(error) {
+          ToastEmitter.error(error.message);
+        },
       },
       dehydrate: {
         serializeData: superjson.serialize,

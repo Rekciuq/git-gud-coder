@@ -37,6 +37,8 @@
 :root {
   --toastify-color-error: #f38ba8;
   --toastify-icon-color-error: var(--toastify-color-error);
+  --toastify-color-success: #a6e3a1;
+  --toastify-icon-color-error: var(--toastify-color-success);
   --toastify-text-color-dark: #cdd6f4;
   --toastify-color-dark: #222237;
 }

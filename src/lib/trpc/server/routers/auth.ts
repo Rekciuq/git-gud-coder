@@ -37,7 +37,7 @@ const setJWTTokens = async (
   });
 
   [accessTokenCookie, refreshTokenCookie].map((token) =>
-    context.headers.append("Set-Cookie", token),
+    context.responseHeaders.append("Set-Cookie", token),
   );
 
   return refreshToken;
@@ -123,7 +123,7 @@ export const authRouter = createTRPCRouter({
     return res;
   }),
   logout: privateProcedure.query(async (opts) => {
-    opts.ctx.headers.delete(ACCESS_TOKEN);
-    opts.ctx.headers.delete(REFRESH_TOKEN);
+    opts.ctx.responseHeaders.delete(ACCESS_TOKEN);
+    opts.ctx.responseHeaders.delete(REFRESH_TOKEN);
   }),
 });

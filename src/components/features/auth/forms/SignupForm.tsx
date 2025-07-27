@@ -12,10 +12,12 @@ import {
 import ToastEmitter from "@/services/client/ToastEmitter";
 import { RadioOptions } from "@/types/shared/form/field";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 
 const SignupForm = () => {
   const trpc = useTRPC();
+  const router = useRouter();
   const getPresignedUrlOptions = trpc.upload.getPresignedUrl.queryOptions();
   const { refetch: getPresignedUrl } = useQuery({
     ...getPresignedUrlOptions,
@@ -24,10 +26,9 @@ const SignupForm = () => {
 
   const { mutate: signupUser } = useMutation(
     trpc.auth.signup.mutationOptions({
-      onError(error) {
-        console.error(error.message);
-        console.error(error.data);
-        console.error(error.shape);
+      onMutate() {
+        router.refresh();
+        ToastEmitter.success("Signed up successfully!");
       },
     }),
   );
