@@ -3,6 +3,7 @@ import UserCard from "./UserCard";
 import Dropdown from "@/components/shared/dropdown/Dropdown";
 import { logoutAction } from "@/serverActions/logout";
 import ToastEmitter from "@/services/client/ToastEmitter";
+import Breadcrumbs from "./Breadcrumbs";
 
 const Header = () => {
   return (
@@ -31,6 +32,7 @@ const Header = () => {
           <UserCard />
         </Dropdown>
       </div>
+      <Breadcrumbs />
       <div className="w-full border-b border-b-primary-text"></div>
     </div>
   );
