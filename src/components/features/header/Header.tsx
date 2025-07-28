@@ -32,8 +32,8 @@ const Header = () => {
           <UserCard />
         </Dropdown>
       </div>
-      <Breadcrumbs />
       <div className="w-full border-b border-b-primary-text"></div>
+      <Breadcrumbs className="p-2" />
     </div>
   );
 };

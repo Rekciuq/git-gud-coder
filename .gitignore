@@ -47,5 +47,6 @@ database/*
 /bucket/go-bucket-app
 /bucket/database/db.db
 /bucket/uploads/images
+/bucket/uploads/videos
 
 /src/generated/prisma

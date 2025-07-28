@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { createPredefinedRolesSeed } from "./role/createPredefinedRolesSeed";
 import { createRandomUsersSeed } from "./user/createRandomUsersSeed";
+import { createRandomCourseSeed } from "./course/createRandomCourseSeed";
 
 const main = async () => {
   prisma.$connect();
@@ -8,6 +9,7 @@ const main = async () => {
 
   await createPredefinedRolesSeed();
   await createRandomUsersSeed();
+  await createRandomCourseSeed();
 
   console.log("Seeding database was successfully!");
 };

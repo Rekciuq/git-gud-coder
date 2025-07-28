@@ -17,6 +17,7 @@ You need to pull this github repo:
 Then you can actually initialize the project with the script
 
 (run the script from root project directory)
+The script may be rather slow depending on CPU, because of reformatting videos to HLS.
 
 ```bash
 npm run init

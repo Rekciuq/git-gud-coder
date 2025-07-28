@@ -27,6 +27,8 @@ model Image {
   createdAt     DateTime @default(now())
   bucketImageId String   @unique
   User          User[]
+  Video         Video[]
+  Course        Course[]
 }
 
 model Session {
@@ -45,27 +47,18 @@ model Role {
 }
 
 model Video {
-  id          Int               @id @default(autoincrement())
-  url         String
-  resolutions VideoResolution[]
-  Course      Course?           @relation(fields: [courseId], references: [id])
+  id            Int    @id @default(autoincrement())
+  url           String
+  lengthSec     Int
+  name          String
+  description   String
+  index         Int
+  bucketVideoId String @unique
+
+  thumbnail   Image   @relation(fields: [thumbnailId], references: [id])
+  Course      Course? @relation(fields: [courseId], references: [id])
   courseId    Int?
-}
-
-model Resolution {
-  id     Int               @id @default(autoincrement())
-  name   String            @unique
-  videos VideoResolution[]
-}
-
-model VideoResolution {
-  videoId      Int
-  resolutionId Int
-
-  video      Video      @relation(fields: [videoId], references: [id])
-  resolution Resolution @relation(fields: [resolutionId], references: [id])
-
-  @@id([videoId, resolutionId])
+  thumbnailId Int
 }
 
 model Course {
@@ -73,7 +66,9 @@ model Course {
   name        String
   description String
 
-  videos Video[]
-  user   User    @relation(fields: [userId], references: [id])
-  userId Int
+  videos      Video[]
+  thumbnail   Image   @relation(fields: [thumbnailId], references: [id])
+  thumbnailId Int
+  user        User    @relation(fields: [userId], references: [id])
+  userId      Int
 }

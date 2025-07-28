@@ -31,7 +31,7 @@ const Breadcrumbs = ({ className }: BreadcrumbsProps) => {
   });
 
   return (
-    <div className={cn("p-2 inline-flex gap-2", className)}>
+    <div className={cn("inline-flex gap-2", className)}>
       {breadcrumbs.map((crumb, index) => (
         <div className="inline-flex gap-2" key={crumb.path}>
           <Link
