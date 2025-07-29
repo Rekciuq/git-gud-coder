@@ -4,13 +4,28 @@ import Input from "../Input";
 import Label from "../Label";
 import { CommonFieldProps } from "@/types/shared/form/field";
 
-const TextField = ({ name, label, className }: CommonFieldProps) => {
+const TextField = ({
+  name,
+  label,
+  className,
+  inputClassName,
+  hideExceptInput,
+  placeholder,
+  icon,
+}: CommonFieldProps) => {
   const baseClassNames = "bg-background flex flex-col";
   return (
     <div className={cn(baseClassNames, className)}>
-      <Label name={name} text={label} />
-      <ErrorMessage name={name} />
-      <Input autoComplete="username" name={name} type="text" />
+      {!hideExceptInput && <Label name={name} text={label} />}
+      {!hideExceptInput && <ErrorMessage name={name} />}
+      {icon && icon}
+      <Input
+        placeholder={placeholder}
+        autoComplete="username"
+        className={inputClassName}
+        name={name}
+        type="text"
+      />
     </div>
   );
 };

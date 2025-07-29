@@ -12,10 +12,14 @@ type InputProps = {
   className?: string;
   value?: string;
   autoComplete?: HTMLInputAutoCompleteAttribute;
+  placeholder?: string;
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ name, type, className, autoComplete, value }: InputProps, inputRef) => {
+  (
+    { name, type, className, autoComplete, value, placeholder }: InputProps,
+    inputRef,
+  ) => {
     const {
       register,
       formState: { errors },
@@ -46,6 +50,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         className={cn(baseClassNames, className)}
         type={type}
         value={value}
+        placeholder={placeholder}
         {...rest}
       />
     );

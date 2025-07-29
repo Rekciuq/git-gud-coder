@@ -63,7 +63,7 @@ const SignupForm = () => {
             lastName,
             role,
             password,
-            imageUrl: responseImageURL.imageURL,
+            imageUrl: responseImageURL.fileURL,
           };
 
           signupUser(newUser);

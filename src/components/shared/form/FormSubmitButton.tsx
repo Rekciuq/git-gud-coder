@@ -1,6 +1,7 @@
 import { useFormState } from "react-hook-form";
 import Button from "../Button";
 import { ButtonTypes } from "@/types/shared/button";
+import { forwardRef } from "react";
 
 type FormSubmitButtonProps = {
   type: ButtonTypes;
@@ -8,27 +9,28 @@ type FormSubmitButtonProps = {
   isLoading?: boolean;
 };
 
-const FormSubmitButton = ({
-  type,
-  className,
-  isLoading,
-}: FormSubmitButtonProps) => {
-  const { isSubmitting } = useFormState();
+const FormSubmitButton = forwardRef<HTMLButtonElement, FormSubmitButtonProps>(
+  ({ type, className, isLoading }: FormSubmitButtonProps, ref) => {
+    const { isSubmitting } = useFormState();
 
-  const typeHandler: Record<ButtonTypes, string> = {
-    submit: "Submit",
-    update: "Update",
-    delete: "Delete",
-  };
+    const typeHandler: Record<ButtonTypes, string> = {
+      submit: "Submit",
+      update: "Update",
+      delete: "Delete",
+    };
 
-  return (
-    <Button
-      className={className}
-      type={type}
-      isLoading={isSubmitting || isLoading}
-      label={typeHandler[type]}
-    />
-  );
-};
+    return (
+      <Button
+        ref={ref}
+        className={className}
+        type={type}
+        isLoading={isSubmitting || isLoading}
+        label={typeHandler[type]}
+      />
+    );
+  },
+);
+
+FormSubmitButton.displayName = "FormSubmitButton";
 
 export default FormSubmitButton;
