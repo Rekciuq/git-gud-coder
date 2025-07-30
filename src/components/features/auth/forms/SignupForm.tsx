@@ -10,10 +10,10 @@ import {
   serverSignupSchema,
 } from "@/schemas/auth/login/signup.schema";
 import ToastEmitter from "@/services/client/ToastEmitter";
-import { RadioOptions } from "@/types/shared/form/field";
+import { RadioOption } from "@/types/shared/form/field";
+import { SchemaType } from "@/types/shared/schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
 
 const SignupForm = () => {
   const trpc = useTRPC();
@@ -33,7 +33,7 @@ const SignupForm = () => {
     }),
   );
 
-  const roles: RadioOptions = [
+  const roles: RadioOption[] = [
     { title: "User", value: DB_USER_ROLE.toString() },
     { title: "Teacher", value: DB_TEACHER_ROLE.toString() },
   ];
@@ -57,7 +57,7 @@ const SignupForm = () => {
 
           const { login, firstName, lastName, password, role } = values;
 
-          const newUser: z.infer<typeof serverSignupSchema> = {
+          const newUser: SchemaType<typeof serverSignupSchema> = {
             login,
             firstName,
             lastName,

@@ -1,1 +1,1 @@
-export type InputType = "text" | "password" | "file" | "radio";
+export type InputType = "text" | "password" | "file" | "radio" | "checkbox";

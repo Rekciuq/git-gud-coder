@@ -2,17 +2,19 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { z, ZodSchema } from "zod";
+import { ZodSchema } from "zod";
 import FormSubmitButton from "./FormSubmitButton";
 import TextField from "./fields/TextField";
 import PasswordField from "./fields/PasswordField";
 import ImageField from "./fields/ImageField";
 import RadioField from "./fields/RadioField";
+import CheckBoxesField from "./fields/CheckBoxesField";
+import { SchemaType } from "@/types/shared/schema";
 
 type FormProps<T extends ZodSchema> = {
-  handleSubmit: SubmitHandler<z.infer<T>>;
+  handleSubmit: SubmitHandler<SchemaType<T>>;
   schema: T;
-  defaultValues?: z.infer<T>;
+  defaultValues?: SchemaType<T>;
   children: React.ReactNode;
   className?: string;
 };
@@ -24,7 +26,7 @@ const Form = <T extends ZodSchema>({
   children,
   className,
 }: FormProps<T>) => {
-  const methods = useForm<z.infer<T>>({
+  const methods = useForm<SchemaType<T>>({
     resolver: zodResolver(schema, {}, { mode: "sync" }),
     mode: "all",
     defaultValues,
@@ -42,6 +44,7 @@ Form.TextField = TextField;
 Form.PasswordField = PasswordField;
 Form.ImageField = ImageField;
 Form.RadioField = RadioField;
+Form.CheckboxesField = CheckBoxesField;
 Form.Submit = FormSubmitButton;
 
 export default Form;

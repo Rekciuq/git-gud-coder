@@ -28,7 +28,7 @@ export default function ApplicationLayout({
   return (
     <>
       <Header />
-      {children}
+      <div className="w-full h-full">{children}</div>
     </>
   );
 }

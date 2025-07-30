@@ -1,7 +1,7 @@
 import { cn } from "@/lib/cn";
 
 type LabelProps = {
-  name: string;
+  name?: string;
   className?: string;
   text: string;
 };

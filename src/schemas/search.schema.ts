@@ -1,6 +1,5 @@
 import { z } from "zod";
-import stringSchema from "./auth/stringSchema";
 
-const searchSchema = z.object({ search: stringSchema });
+const searchSchema = z.object({ search: z.string().nullable().optional() });
 
 export default searchSchema;

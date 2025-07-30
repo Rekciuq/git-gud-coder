@@ -8,8 +8,13 @@ export type CommonFieldProps = {
   icon?: React.ReactNode;
 };
 
-export type RadioOptions = { title: string; value: string }[];
+export type RadioOption = { title: string; value: string };
+export type CheckBoxOption = { name: string } & RadioOption;
 
 export type RadioFieldProps = {
-  options: RadioOptions;
+  options: RadioOption[];
 } & CommonFieldProps;
+
+export type CheckBoxesFieldProps = {
+  options: CheckBoxOption[];
+} & Omit<CommonFieldProps, "name" | "placeholder" | "icon">;

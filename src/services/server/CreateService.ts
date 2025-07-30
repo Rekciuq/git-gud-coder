@@ -1,14 +1,14 @@
 import { handlePromiseServer } from "@/helpers/handlePromiseServer";
 import prisma from "@/lib/prisma";
 import { serverSignupSchema } from "@/schemas/auth/login/signup.schema";
-import { z } from "zod";
+import { SchemaType } from "@/types/shared/schema";
 
 class CreateService {
   static createUserWithImage = ({
     imageUrl,
     bucketImageId,
     ...user
-  }: z.infer<typeof serverSignupSchema> & { bucketImageId: string }) =>
+  }: SchemaType<typeof serverSignupSchema> & { bucketImageId: string }) =>
     handlePromiseServer(() =>
       prisma.user.create({
         data: {

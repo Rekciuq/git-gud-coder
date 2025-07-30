@@ -14,6 +14,7 @@ const UserCard = () => {
           src={user.image}
           alt={"User profile image"}
           fill={true}
+          sizes="max-w-6 max-h-6"
           className="object-cover"
         />
       </div>

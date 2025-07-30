@@ -4,7 +4,8 @@ import Form from "@/components/shared/form/Form";
 import { cn } from "@/lib/cn";
 import searchSchema from "@/schemas/search.schema";
 import SearchSubmitButton from "./SearchSubmitButton";
-import { useDebounceValue } from "usehooks-ts";
+import debounce from "lodash/debounce";
+import { useSetParams } from "@/features/dashboard/hooks/useSetParams";
 
 type SearchProps = {
   className?: string;
@@ -12,15 +13,19 @@ type SearchProps = {
 };
 
 const Search = ({ className, inputClassName }: SearchProps) => {
-  const [debouncedValue, setDebouncedValue] = useDebounceValue("", 500);
+  const params = useSetParams();
 
-  // TODO: Add useQuery request to search trough courses like /dashboard/?s="some text" to search by the name
+  const setParams = debounce((values) => {
+    params({ search: values || undefined }).refresh();
+    return values;
+  }, 500);
+
   return (
     <Form
       className={className}
       schema={searchSchema}
       handleSubmit={(values) => {
-        setDebouncedValue(values.search);
+        setParams(values.search);
       }}
     >
       <Form.TextField

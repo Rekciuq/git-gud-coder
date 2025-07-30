@@ -34,6 +34,17 @@ class GetService {
         },
       }),
     );
+  static getCourses = (filters: any) =>
+    handlePromiseServer(() =>
+      prisma.course.findMany({
+        where: {
+          name: {
+            contains: "Int",
+          },
+        },
+        include: { thumbnail: { select: { url: true } } },
+      }),
+    );
 }
 
 export default GetService;

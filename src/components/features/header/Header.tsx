@@ -33,6 +33,7 @@ const Header = () => {
       </div>
       <div className="w-full border-b border-b-primary-text"></div>
       <Breadcrumbs className="p-2" />
+      <div className="w-full border-b border-b-primary-text"></div>
     </div>
   );
 };
