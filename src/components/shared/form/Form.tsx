@@ -10,6 +10,7 @@ import ImageField from "./fields/ImageField";
 import RadioField from "./fields/RadioField";
 import CheckBoxesField from "./fields/CheckBoxesField";
 import { SchemaType } from "@/types/shared/schema";
+import RangeField from "./fields/RangeField";
 
 type FormProps<T extends ZodSchema> = {
   handleSubmit: SubmitHandler<SchemaType<T>>;
@@ -45,6 +46,7 @@ Form.PasswordField = PasswordField;
 Form.ImageField = ImageField;
 Form.RadioField = RadioField;
 Form.CheckboxesField = CheckBoxesField;
+Form.RangeField = RangeField;
 Form.Submit = FormSubmitButton;
 
 export default Form;

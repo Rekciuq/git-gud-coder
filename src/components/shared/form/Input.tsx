@@ -13,11 +13,22 @@ type InputProps = {
   value?: string;
   autoComplete?: HTMLInputAutoCompleteAttribute;
   placeholder?: string;
+  min?: number;
+  max?: number;
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
-    { name, type, className, autoComplete, value, placeholder }: InputProps,
+    {
+      name,
+      type,
+      className,
+      autoComplete,
+      value,
+      placeholder,
+      min,
+      max,
+    }: InputProps,
     inputRef,
   ) => {
     const {
@@ -32,7 +43,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         : "border-primary-text/50 focus:outline-primary-text",
     );
 
-    const { ref: hookFormRef, ...rest } = register(name, { value });
+    const { ref: hookFormRef, ...rest } = register(name, { value, min, max });
 
     return (
       <input

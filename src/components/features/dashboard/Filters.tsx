@@ -1,6 +1,6 @@
 "use client";
 import Form from "@/components/shared/form/Form";
-import filtersSchema from "@/schemas/filters.schema";
+import filtersFormSchema from "@/schemas/filtersForm.schema";
 import { CheckBoxOption, RadioOption } from "@/types/shared/form/field";
 
 const Filters = () => {
@@ -17,10 +17,14 @@ const Filters = () => {
     { title: "2 or below", name: "rating-2", value: "2" },
     { title: "1 or below", name: "rating-1", value: "1" },
   ];
+  const categories: RadioOption[] = [
+    { title: "test1", value: "test1" },
+    { title: "test2", value: "test2" },
+  ];
   return (
     <Form
       className="h-fit sticky border border-primary-text p-2 top-15"
-      schema={filtersSchema}
+      schema={filtersFormSchema}
       handleSubmit={(value) => console.log("filters", value)}
     >
       <Form.RadioField
@@ -32,12 +36,8 @@ const Filters = () => {
       <div>
         <Form.CheckboxesField label="Rating:" options={ratingOptions} />
       </div>
-      <div>
-        <h3>Category</h3>
-      </div>
-      <div>
-        <h3>Price</h3>
-      </div>
+      <Form.RadioField name="category" label="Category:" options={categories} />
+      <Form.RangeField min={0} max={1500} name="price" label="Price Range:" />
       {/* Reset */}
     </Form>
   );
