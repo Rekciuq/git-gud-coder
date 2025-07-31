@@ -18,7 +18,9 @@ const UserCard = () => {
           className="object-cover"
         />
       </div>
-      <p className="text-primary-text text-xs">{userDetails}</p>
+      <p className="text-primary-text text-xs max-w-50 line-clamp-1">
+        {userDetails}
+      </p>
     </div>
   );
 };
