@@ -6,7 +6,7 @@ import { RadioFieldProps } from "@/types/shared/form/field";
 import { useFormContext } from "react-hook-form";
 
 const RadioField = ({ name, label, className, options }: RadioFieldProps) => {
-  const baseClassNames = "bg-background flex flex-col";
+  const baseClassNames = "bg-background flex flex-col my-3";
   const { watch } = useFormContext();
   const formValue = watch(name);
 
@@ -14,9 +14,9 @@ const RadioField = ({ name, label, className, options }: RadioFieldProps) => {
     <div className={cn(baseClassNames, className)}>
       <Label name={name} text={label} />
       <ErrorMessage name={name} />
-      <div className="flex flex-col justify-around">
+      <div className="flex flex-col w-2/5 gap-1.5">
         {options.map((opt) => (
-          <div className="inline-flex gap-2" key={opt.value}>
+          <div className="inline-flex justify-between" key={opt.value}>
             <p className="text-primary-text">{opt.title}</p>
             <div className="relative flex justify-center items-center">
               <Input

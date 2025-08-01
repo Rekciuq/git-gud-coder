@@ -9,7 +9,7 @@ export type CommonFieldProps = {
 };
 
 export type RadioOption = { title: string; value: string };
-export type CheckBoxOption = { name: string } & RadioOption;
+export type CheckBoxOption = RadioOption;
 
 export type RadioFieldProps = {
   options: RadioOption[];
@@ -17,4 +17,4 @@ export type RadioFieldProps = {
 
 export type CheckBoxesFieldProps = {
   options: CheckBoxOption[];
-} & Omit<CommonFieldProps, "name" | "placeholder" | "icon">;
+} & Omit<CommonFieldProps, "placeholder" | "icon">;

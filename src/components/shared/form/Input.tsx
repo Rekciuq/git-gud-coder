@@ -73,7 +73,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     };
 
     const { ref: hookFormRef, ...rest } = register(name, {
-      value,
       onChange: handleChange,
       min,
       max,
@@ -95,6 +94,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         className={cn(baseClassNames, className)}
         type={type}
         placeholder={placeholder}
+        value={value}
         {...rest}
       />
     );

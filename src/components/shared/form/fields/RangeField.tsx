@@ -18,8 +18,8 @@ type RangeFieldProps = {
 
 const RangeField = ({ name, label, className, min, max }: RangeFieldProps) => {
   const baseClassNames = "bg-background flex flex-col";
-  const minRangeName = `min-${name}`;
-  const maxRangeName = `max-${name}`;
+  const minRangeName = `min${name[0].toUpperCase()}${name.slice(1)}`;
+  const maxRangeName = `max${name[0].toUpperCase()}${name.slice(1)}`;
 
   const rangeBarRef = useRef<HTMLDivElement>(null);
   const { setValue, getValues } = useFormContext();
