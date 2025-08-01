@@ -7,3 +7,9 @@ export const DB_ROLES = {
   2: "User",
   3: "Teacher",
 };
+
+export const DB_CATEGORIES = {
+  1: "Frontend",
+  2: "Backend",
+  3: "FullStack",
+};

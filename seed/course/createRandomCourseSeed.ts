@@ -33,11 +33,14 @@ export const createRandomCourseSeed = async () => {
     const imageId = await createImage(coursePicUrl);
     const courseName = faker.company.catchPhrase();
     const courseDescription = faker.lorem.paragraph();
+    const price = faker.number.int({ min: 0, max: 1500 });
+    const category = faker.number.int({ min: 1, max: 3 });
 
     const course = await createNewCourseSeed({
-      course: { name: courseName, description: courseDescription },
+      course: { name: courseName, description: courseDescription, price },
       thumbnailId: imageId,
       userId: teacher.id,
+      categoryId: category,
     });
 
     const randomNumber = faker.number.int({ min: 1, max: 5 });

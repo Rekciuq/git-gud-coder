@@ -7,6 +7,21 @@ type CreateNewUserSeedProps = {
 
 export const createNewUserSeed = async ({ user }: CreateNewUserSeedProps) => {
   await prisma.user.create({
-    data: user,
+    data: {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      password: user.password,
+      role: {
+        connect: {
+          id: user.roleId,
+        },
+      },
+      image: {
+        connect: {
+          id: user.imageId,
+        },
+      },
+    },
   });
 };

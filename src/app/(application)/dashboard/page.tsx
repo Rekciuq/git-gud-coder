@@ -11,6 +11,7 @@ import Link from "next/link";
 export default function DashboardPage() {
   const params = useGetParams();
   const trpc = useTRPC();
+
   const { data: courses } = useQuery(
     trpc.course.getCourses.queryOptions(params),
   );

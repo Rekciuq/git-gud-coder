@@ -34,17 +34,55 @@ class GetService {
         },
       }),
     );
-  static getCourses = (filters: any) =>
-    handlePromiseServer(() =>
-      prisma.course.findMany({
-        where: {
-          name: {
-            contains: "Int",
-          },
-        },
-        include: { thumbnail: { select: { url: true } } },
-      }),
-    );
+  // static getCourses = ({
+  //   search,
+  //   price,
+  //   category,
+  //   rating,
+  //   sortBy,
+  // }: SchemaType<typeof filtersSchema>) =>
+  //   handlePromiseServer(() =>
+  //     prisma.course.findMany({
+  //       where: {
+  //         name: {
+  //           contains: search,
+  //         },
+  //         price: {
+  //           lte: price?.[0],
+  //           gte: price?.[1],
+  //         },
+  //         category: {
+  //           contains: category,
+  //         },
+  //         CourseRating: {
+  //           some: {
+  //             rating: {
+  //               in: rating,
+  //             },
+  //           },
+  //         },
+  //       },
+  //       include: {
+  //         thumbnail: {
+  //           select: { url: true },
+  //         },
+  //         CourseRating: true,
+  //       },
+  //       orderBy:
+  //         sortBy === "price"
+  //           ? {
+  //               price: "desc",
+  //             }
+  //           : sortBy === "newest" ? {createdAt: "asc"} : sortBy: ==="oldest" ? {createdAt: "desc"} : undefined,
+  //     }),
+  //   );
 }
+
+// const sortOptions: RadioOption[] = [
+//   { title: "price", value: "price" },
+//   { title: "newest", value: "newest" },
+//   { title: "oldest", value: "oldest" },
+//   { title: "rating", value: "rating" },
+// ];
 
 export default GetService;

@@ -60,24 +60,43 @@ model Video {
   index         Int
   bucketVideoId String @unique
 
-  thumbnail   Image   @relation(fields: [thumbnailId], references: [id])
-  Course      Course? @relation(fields: [courseId], references: [id])
-  courseId    Int?
   thumbnailId Int
+  thumbnail   Image  @relation(fields: [thumbnailId], references: [id])
+  courseId    Int
+  Course      Course @relation(fields: [courseId], references: [id])
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  courseCategory CourseCategory[]
+}
+
+model CourseCategory {
+  id         Int @id @default(autoincrement())
+  categoryId Int
+  courseId   Int
+
+  category Category @relation(fields: [categoryId], references: [id])
+  course   Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([categoryId, courseId])
 }
 
 model Course {
-  id          Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String
+  createdAt   DateTime @default(now())
 
   videos       Video[]
-  thumbnail    Image          @relation(fields: [thumbnailId], references: [id])
+  thumbnail    Image            @relation(fields: [thumbnailId], references: [id])
   thumbnailId  Int
-  user         User           @relation(fields: [userId], references: [id])
+  user         User             @relation(fields: [userId], references: [id])
   userId       Int
-  category     String?
-  price        Float?
+  categories   CourseCategory[]
+  price        Float
   CourseRating CourseRating[]
 }
 
