@@ -3,12 +3,14 @@ import { forwardRef, MouseEventHandler } from "react";
 import Loader from "../icons/Loader";
 import { cn } from "@/lib/cn";
 import { useFormContext } from "react-hook-form";
+import { useSetParams } from "@/features/dashboard/hooks/useSetParams";
 
 type ButtonProps = {
   label: string;
   type: ButtonTypes;
   disabled?: boolean;
   isLoading?: boolean;
+  isFilterForm?: boolean;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   className?: string;
 };
@@ -20,12 +22,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       type,
       disabled = false,
       isLoading,
+      isFilterForm = false,
       className,
       onClick,
     }: ButtonProps,
     ref,
   ) => {
     const { reset } = useFormContext();
+    const setParams = useSetParams();
+
     const baseClassNames =
       "relative flex justify-center items-center border border-2 p-1 text-primary-text cursor-pointer transition-colors";
 
@@ -50,6 +55,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         onClick={(e) => {
           if (!onClick && type === "reset") {
             reset();
+            if (isFilterForm) {
+              setParams({
+                sortBy: undefined,
+                search: undefined,
+                price: undefined,
+                rating: undefined,
+                category: undefined,
+              }).refresh();
+            }
           }
           onClick?.(e);
         }}

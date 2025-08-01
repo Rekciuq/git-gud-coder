@@ -7,10 +7,14 @@ type FormSubmitButtonProps = {
   type: ButtonTypes;
   className?: string;
   isLoading?: boolean;
+  isFilterForm?: boolean;
 };
 
 const FormSubmitButton = forwardRef<HTMLButtonElement, FormSubmitButtonProps>(
-  ({ type, className, isLoading }: FormSubmitButtonProps, ref) => {
+  (
+    { type, className, isLoading, isFilterForm = false }: FormSubmitButtonProps,
+    ref,
+  ) => {
     const { isSubmitting } = useFormState();
 
     const typeHandler: Record<ButtonTypes, string> = {
@@ -27,6 +31,7 @@ const FormSubmitButton = forwardRef<HTMLButtonElement, FormSubmitButtonProps>(
         className={className}
         type={type}
         isLoading={isSubmitting || isLoading}
+        isFilterForm={isFilterForm}
         label={typeHandler[type]}
       />
     );

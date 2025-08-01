@@ -32,7 +32,9 @@ const Filters = () => {
       schema={filtersFormSchema}
       handleSubmit={(value) => {
         const params: SchemaType<typeof filtersSchema> = {
-          ...value,
+          sortBy: value.sortBy || undefined,
+          rating: value.rating?.length ? value.rating : undefined,
+          category: value.category || undefined,
           price:
             value.minPrice || value.maxPrice
               ? [value!.minPrice!, value!.maxPrice!]
@@ -61,7 +63,7 @@ const Filters = () => {
       <Form.RadioField name="category" label="Category:" options={categories} />
       <Form.RangeField min={0} max={1500} name="price" label="Price Range:" />
       <div className="inline-flex justify-between w-full mt-2">
-        <Form.Submit type="reset" />
+        <Form.Submit type="reset" isFilterForm />
         <Form.Submit type="apply" />
       </div>
     </Form>
