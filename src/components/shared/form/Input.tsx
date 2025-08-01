@@ -3,7 +3,7 @@
 import { MAX_PASSWORD_LENGTH } from "@/constants/schemas/auth/values";
 import { cn } from "@/lib/cn";
 import { InputType } from "@/types/shared/form/input";
-import { forwardRef, HTMLInputAutoCompleteAttribute } from "react";
+import { ChangeEvent, forwardRef, HTMLInputAutoCompleteAttribute } from "react";
 import { useFormContext } from "react-hook-form";
 
 type InputProps = {
@@ -15,6 +15,7 @@ type InputProps = {
   placeholder?: string;
   min?: number;
   max?: number;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -28,6 +29,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       placeholder,
       min,
       max,
+      onChange,
     }: InputProps,
     inputRef,
   ) => {
@@ -43,7 +45,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         : "border-primary-text/50 focus:outline-primary-text",
     );
 
-    const { ref: hookFormRef, ...rest } = register(name, { value, min, max });
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      if (type === "number") {
+        const val = Number(e.target.value);
+        if (min !== undefined && val < min) e.target.value = String(min);
+        if (max !== undefined && val > max) e.target.value = String(max);
+      }
+
+      onChange?.(e);
+    };
+
+    const { ref: hookFormRef, ...rest } = register(name, {
+      value,
+      onChange: handleChange,
+      min,
+      max,
+    });
 
     return (
       <input
@@ -60,7 +77,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         maxLength={MAX_PASSWORD_LENGTH}
         className={cn(baseClassNames, className)}
         type={type}
-        value={value}
         placeholder={placeholder}
         {...rest}
       />

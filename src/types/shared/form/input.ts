@@ -4,4 +4,4 @@ export type InputType =
   | "file"
   | "radio"
   | "checkbox"
-  | "range";
+  | "number";
