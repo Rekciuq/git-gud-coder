@@ -31,19 +31,23 @@ const RangeField = ({ name, label, className, min, max }: RangeFieldProps) => {
     getValues(maxRangeName) ?? max,
   );
 
-  const debouncedUpdateForm = useMemo(
-    () =>
-      debounce((minVal: number, maxVal: number) => {
-        setValue(minRangeName, minVal, {
-          shouldValidate: true,
-          shouldDirty: true,
-        });
-        setValue(maxRangeName, maxVal, {
-          shouldValidate: true,
-          shouldDirty: true,
-        });
-      }, 500),
+  const updateValues = useCallback(
+    (minVal: number, maxVal: number) => {
+      setValue(minRangeName, minVal, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      setValue(maxRangeName, maxVal, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    },
     [setValue, minRangeName, maxRangeName],
+  );
+
+  const debouncedUpdateForm = useMemo(
+    () => debounce(updateValues, 500),
+    [updateValues],
   );
 
   useEffect(() => () => debouncedUpdateForm.cancel(), [debouncedUpdateForm]);
@@ -56,14 +60,14 @@ const RangeField = ({ name, label, className, min, max }: RangeFieldProps) => {
     const val = Number(e.target.value);
     const clampedVal = Math.min(val, maxInput - 1);
     setMinInput(clampedVal);
-    debouncedUpdateForm(clampedVal, maxInput);
+    updateValues(clampedVal, maxInput);
   };
 
   const handleMaxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = Number(e.target.value);
     const clampedVal = Math.max(val, minInput + 1);
     setMaxInput(clampedVal);
-    debouncedUpdateForm(minInput, clampedVal);
+    updateValues(minInput, clampedVal);
   };
 
   const handleMinThumbChange = useCallback(

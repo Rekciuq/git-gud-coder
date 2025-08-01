@@ -2,6 +2,7 @@ import { ButtonTypes } from "@/types/shared/button";
 import { forwardRef, MouseEventHandler } from "react";
 import Loader from "../icons/Loader";
 import { cn } from "@/lib/cn";
+import { useFormContext } from "react-hook-form";
 
 type ButtonProps = {
   label: string;
@@ -24,21 +25,34 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }: ButtonProps,
     ref,
   ) => {
+    const { reset } = useFormContext();
     const baseClassNames =
       "relative flex justify-center items-center border border-2 p-1 text-primary-text cursor-pointer transition-colors";
+
+    const submitClasses =
+      "border-button-primary text-button-primary hover:border-button-primary/75 hover:text-button-primary/75 disabled:border-button-primary/75 disabled:text-button-primary/75";
+    const dangerClasses =
+      "border-alert-error text-alert-error hover:border-alert-error/75 hover:text-alert-error/75 disabled:border-alert-error/75 disabled:text-alert-error/75";
+
     const buttonTypeMapper: Record<ButtonTypes, string> = {
-      submit:
-        "border-button-primary text-button-primary hover:border-button-primary/75 hover:text-button-primary/75 disabled:border-button-primary/75 disabled:text-button-primary/75",
+      submit: submitClasses,
       update:
         "border-alert-peach text-alert-peach hover:border-alert-peach/75 hover:text-alert-peach/75",
-      delete:
-        "border-alert-error text-alert-error hover:border-alert-error/75 hover:text-alert-error/75 disabled:border-alert-error/75 disabled:text-alert-error/75",
+      delete: dangerClasses,
+      reset: dangerClasses,
+      apply: submitClasses,
     };
 
     return (
       <button
         ref={ref}
-        onClick={onClick}
+        type={type !== "reset" ? "submit" : "reset"}
+        onClick={(e) => {
+          if (!onClick && type === "reset") {
+            reset();
+          }
+          onClick?.(e);
+        }}
         className={cn(
           baseClassNames,
           buttonTypeMapper[type],

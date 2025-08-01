@@ -38,7 +38,10 @@ const Filters = () => {
       </div>
       <Form.RadioField name="category" label="Category:" options={categories} />
       <Form.RangeField min={0} max={1500} name="price" label="Price Range:" />
-      {/* Reset */}
+      <div className="inline-flex justify-between w-full mt-2">
+        <Form.Submit type="reset" />
+        <Form.Submit type="apply" />
+      </div>
     </Form>
   );
 };

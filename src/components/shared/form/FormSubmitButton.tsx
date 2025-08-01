@@ -17,6 +17,8 @@ const FormSubmitButton = forwardRef<HTMLButtonElement, FormSubmitButtonProps>(
       submit: "Submit",
       update: "Update",
       delete: "Delete",
+      reset: "Reset",
+      apply: "Apply",
     };
 
     return (

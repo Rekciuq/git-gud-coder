@@ -46,13 +46,30 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     );
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      let finalEvent = e;
+
       if (type === "number") {
-        const val = Number(e.target.value);
-        if (min !== undefined && val < min) e.target.value = String(min);
-        if (max !== undefined && val > max) e.target.value = String(max);
+        const originalValue = e.target.value;
+        if (originalValue !== "") {
+          let numValue = Number(originalValue);
+
+          if (min !== undefined && numValue < min) {
+            numValue = min;
+          }
+          if (max !== undefined && numValue > max) {
+            numValue = max;
+          }
+
+          if (String(numValue) !== originalValue) {
+            finalEvent = {
+              ...e,
+              target: { ...e.target, value: String(numValue) },
+            } as ChangeEvent<HTMLInputElement>;
+          }
+        }
       }
 
-      onChange?.(e);
+      onChange?.(finalEvent);
     };
 
     const { ref: hookFormRef, ...rest } = register(name, {
