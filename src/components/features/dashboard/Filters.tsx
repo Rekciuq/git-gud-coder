@@ -1,6 +1,7 @@
 "use client";
 
 import Form from "@/components/shared/form/Form";
+import { useGetParams } from "@/features/dashboard/hooks/useGetParams";
 import { useSetParams } from "@/features/dashboard/hooks/useSetParams";
 import filtersSchema from "@/schemas/filters.schema";
 import filtersFormSchema from "@/schemas/filtersForm.schema";
@@ -9,6 +10,18 @@ import { SchemaType } from "@/types/shared/schema";
 
 const Filters = () => {
   const setParams = useSetParams();
+  const existingParams = useGetParams();
+
+  console.log("existingParams", existingParams);
+  const parsedSchema = filtersFormSchema.safeParse({
+    ...existingParams,
+    rating: existingParams?.rating?.map(String),
+    minPrice: existingParams?.price?.[0] || undefined,
+    maxPrice: existingParams?.price?.[1] || undefined,
+  });
+  const defaultValues = parsedSchema.success ? parsedSchema.data : {};
+  console.log(defaultValues);
+
   const sortOptions: RadioOption[] = [
     { title: "price", value: "price" },
     { title: "newest", value: "newest" },
@@ -30,10 +43,11 @@ const Filters = () => {
     <Form
       className="h-fit sticky border border-primary-text p-2 top-15"
       schema={filtersFormSchema}
+      defaultValues={defaultValues}
       handleSubmit={(value) => {
         const params: SchemaType<typeof filtersSchema> = {
           sortBy: value.sortBy || undefined,
-          rating: value.rating?.length ? value.rating : undefined,
+          rating: value.rating?.length ? value.rating.map(Number) : undefined,
           category: value.category || undefined,
           price:
             value.minPrice || value.maxPrice

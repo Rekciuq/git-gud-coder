@@ -11,6 +11,7 @@ import RadioField from "./fields/RadioField";
 import CheckBoxesField from "./fields/CheckBoxesField";
 import { SchemaType } from "@/types/shared/schema";
 import RangeField from "./fields/RangeField";
+import { useEffect } from "react";
 
 type FormProps<T extends ZodSchema> = {
   handleSubmit: SubmitHandler<SchemaType<T>>;
@@ -32,6 +33,12 @@ const Form = <T extends ZodSchema>({
     mode: "all",
     defaultValues,
   });
+
+  useEffect(() => {
+    if (!defaultValues) return;
+    methods.reset(defaultValues);
+  }, [defaultValues, methods]);
+
   return (
     <FormProvider {...methods}>
       <form className={className} onSubmit={methods.handleSubmit(handleSubmit)}>

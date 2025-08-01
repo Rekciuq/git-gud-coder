@@ -1,28 +1,29 @@
 import { z } from "zod";
 
-const allowedRatings = [1, 2, 3, 4, 5] as const;
+const allowedRatings = ["1", "2", "3", "4", "5"] as const;
 
 const filtersFormSchema = z.object({
   sortBy: z
     .enum(["price", "newest", "oldest", "rating"])
-    .nullable()
     .optional()
+    .nullable()
     .transform((value) => (value === null ? undefined : value)),
   rating: z
     .preprocess(
-      (v) => (typeof v === "boolean" ? [] : v),
-      z.array(z.enum(allowedRatings.map(String) as [string, ...string[]])),
+      (val) => {
+        if (typeof val === "boolean" || val == null) return [];
+        return val;
+      },
+      z.array(z.enum(allowedRatings)).optional(),
     )
-    .optional()
-    .nullable()
-    .transform((val) => val?.map(Number)),
+    .optional(),
   category: z
     .string()
-    .nullable()
     .optional()
-    .transform((value) => (value === null ? undefined : value)), // enum
-  minPrice: z.number().optional(),
-  maxPrice: z.number().optional(),
+    .nullable()
+    .transform((value) => (value === null ? undefined : value)),
+  minPrice: z.coerce.number().optional(),
+  maxPrice: z.coerce.number().optional(),
 });
 
 export default filtersFormSchema;

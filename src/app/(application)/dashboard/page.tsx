@@ -14,6 +14,7 @@ export default function DashboardPage() {
   const { data: courses } = useQuery(
     trpc.course.getCourses.queryOptions(params),
   );
+
   return (
     <div className="w-full h-full flex">
       <div className="p-2 mt-2 ml-2 relative">

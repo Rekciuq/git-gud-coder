@@ -6,7 +6,7 @@ const searchSchema = z.object({
     .string()
     .nullable()
     .optional()
-    .transform((value) => !!value && value.trim()),
+    .transform((value) => (!!value ? value.trim() : undefined)),
 });
 
 export default searchSchema;

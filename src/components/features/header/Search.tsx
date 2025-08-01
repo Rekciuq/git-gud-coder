@@ -6,6 +6,7 @@ import searchSchema from "@/schemas/search.schema";
 import SearchSubmitButton from "./SearchSubmitButton";
 import debounce from "lodash/debounce";
 import { useSetParams } from "@/features/dashboard/hooks/useSetParams";
+import { useGetParams } from "@/features/dashboard/hooks/useGetParams";
 
 type SearchProps = {
   className?: string;
@@ -13,6 +14,7 @@ type SearchProps = {
 };
 
 const Search = ({ className, inputClassName }: SearchProps) => {
+  const { search } = useGetParams();
   const params = useSetParams();
 
   const setParams = debounce((values) => {
@@ -22,6 +24,7 @@ const Search = ({ className, inputClassName }: SearchProps) => {
 
   return (
     <Form
+      defaultValues={{ search: search || undefined }}
       className={className}
       schema={searchSchema}
       handleSubmit={(values) => {
