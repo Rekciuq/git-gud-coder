@@ -25,24 +25,38 @@ const RangeField = ({ name, label, className, min, max }: RangeFieldProps) => {
   const { setValue, getValues } = useFormContext();
 
   const [minInput, setMinInput] = useState<number>(
-    getValues(minRangeName) ?? min,
+    getValues(minRangeName) || min,
   );
   const [maxInput, setMaxInput] = useState<number>(
-    getValues(maxRangeName) ?? max,
+    getValues(maxRangeName) || max,
   );
 
-  const updateValues = useCallback(
-    (minVal: number, maxVal: number) => {
+  const updateMinValue = useCallback(
+    (minVal: number) => {
       setValue(minRangeName, minVal, {
         shouldValidate: true,
         shouldDirty: true,
       });
+    },
+    [minRangeName, setValue],
+  );
+
+  const updateMaxValue = useCallback(
+    (maxVal: number) => {
       setValue(maxRangeName, maxVal, {
         shouldValidate: true,
         shouldDirty: true,
       });
     },
-    [setValue, minRangeName, maxRangeName],
+    [maxRangeName, setValue],
+  );
+
+  const updateValues = useCallback(
+    (minVal: number, maxVal: number) => {
+      updateMinValue(minVal);
+      updateMaxValue(maxVal);
+    },
+    [updateMinValue, updateMaxValue],
   );
 
   const debouncedUpdateForm = useMemo(
@@ -103,16 +117,27 @@ const RangeField = ({ name, label, className, min, max }: RangeFieldProps) => {
   const watchedMax = useWatch({ name: maxRangeName });
 
   useEffect(() => {
-    if (!isDragging && watchedMin !== undefined && watchedMin !== minInput) {
-      setMinInput(watchedMin);
+    if (!isDragging && watchedMin !== minInput) {
+      setMinInput(watchedMin || min);
+      if (watchedMin === undefined) updateMinValue(min);
     }
-  }, [isDragging, watchedMin, minInput]);
+  }, [isDragging, watchedMin, minInput, min, updateMinValue]);
 
   useEffect(() => {
-    if (!isDragging && watchedMax !== undefined && watchedMax !== maxInput) {
-      setMaxInput(watchedMax);
+    if (!isDragging && watchedMax !== maxInput) {
+      setMaxInput(watchedMax || max);
+      if (watchedMax === undefined) {
+        updateMaxValue(max);
+      }
     }
-  }, [isDragging, watchedMax, maxInput]);
+  }, [isDragging, watchedMax, maxInput, max, updateMaxValue]);
+
+  // I think there are limitation, because it would update on reset form, but only if it's debounced
+  useEffect(() => {
+    if (!isDragging && watchedMax === undefined && watchedMin === undefined) {
+      debouncedUpdateForm(min, max);
+    }
+  }, [isDragging, watchedMax, watchedMin, min, max, debouncedUpdateForm]);
 
   const isMinThumbInPriorityZone = minInput >= min + (max - min) * 0.9;
 
@@ -138,7 +163,7 @@ const RangeField = ({ name, label, className, min, max }: RangeFieldProps) => {
         />
       </div>
       <div className="w-full py-4 text-primary-text text-xs">
-        <div className="flex w-full items-center justify-center">
+        <div className={cn("flex w-full items-center justify-center")}>
           <div ref={rangeBarRef} className="relative w-9/10 bg-panel h-2">
             <div
               style={{

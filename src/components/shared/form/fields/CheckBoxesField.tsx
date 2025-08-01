@@ -8,14 +8,14 @@ const CheckBoxesField = ({
   className,
   options,
 }: CheckBoxesFieldProps) => {
-  const baseClassNames = "bg-background flex flex-col";
+  const baseClassNames = "bg-background flex flex-col my-3";
 
   return (
     <div className={cn(baseClassNames, className)}>
       <Label text={label} />
-      <div className="inline-flex justify-around">
+      <div className="flex flex-col w-2/5 gap-1.5">
         {options.map((opt) => (
-          <div className="inline-flex gap-2" key={opt.value}>
+          <div className="inline-flex justify-between" key={opt.value}>
             <p className="text-primary-text">{opt.title}</p>
             <div className="relative flex justify-center items-center">
               <Input
