@@ -5,156 +5,143 @@ import {
   useRef,
   useState,
   MouseEvent,
+  useMemo,
 } from "react";
 
 type UseCreateRangeFieldProps = {
   rangeBarRef: RefObject<HTMLDivElement | null>;
+  min: number;
+  max: number;
   minValue: number;
   maxValue: number;
-  capValue: number;
+  onMinChange: (value: number) => void;
+  onMaxChange: (value: number) => void;
+  onDragEnd?: () => void;
 };
 
-const convertNumberToPercentage = (num: number, maxNum: number) => {
-  if (maxNum === 0) return 0;
-  return num / maxNum;
-};
+export const useCreateRangeField = (props: UseCreateRangeFieldProps) => {
+  const { rangeBarRef, min, max, minValue, maxValue } = props;
 
-export const useCreateRangeField = ({
-  rangeBarRef,
-  minValue,
-  maxValue,
-  capValue,
-}: UseCreateRangeFieldProps) => {
+  const savedProps = useRef(props);
+  useLayoutEffect(() => {
+    savedProps.current = props;
+  });
+
   const [barWidth, setBarWidth] = useState(0);
-
-  const [minThumbPercent, setMinThumbPercent] = useState(
-    convertNumberToPercentage(minValue, capValue) || 0,
-  );
-
-  const [maxThumbPercent, setMaxThumbPercent] = useState(
-    convertNumberToPercentage(maxValue, capValue) || 1,
-  );
-
-  useEffect(() => {
-    const convertedValue = convertNumberToPercentage(minValue, capValue);
-    setMinThumbPercent(
-      convertedValue <= maxThumbPercent ? convertedValue : maxThumbPercent || 0,
-    );
-  }, [minValue, capValue, maxThumbPercent]);
-
-  useEffect(() => {
-    const convertedValue = convertNumberToPercentage(maxValue, capValue);
-    setMaxThumbPercent(
-      convertedValue >= minThumbPercent ? convertedValue : minThumbPercent || 1,
-    );
-  }, [maxValue, capValue, minThumbPercent]);
-
   const isMinThumbDraggingRef = useRef(false);
-  const minThumbStartXRef = useRef(0);
-
   const isMaxThumbDraggingRef = useRef(false);
-  const maxThumbStartXRef = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
 
   useLayoutEffect(() => {
     const updateBarWidth = () => {
       const rect = rangeBarRef.current?.getBoundingClientRect();
-      if (rect) setBarWidth(rect.width);
+      if (rect) {
+        setBarWidth(rect.width);
+      }
     };
 
     updateBarWidth();
-
     const resizeObserver = new ResizeObserver(updateBarWidth);
     if (rangeBarRef.current) {
       resizeObserver.observe(rangeBarRef.current);
     }
-
     return () => resizeObserver.disconnect();
   }, [rangeBarRef]);
 
-  const minThumbPositionX = barWidth * minThumbPercent;
-  const maxThumbPositionX = barWidth * maxThumbPercent;
-
   useEffect(() => {
-    const controller = new AbortController();
+    const handleMouseMove = (event: globalThis.MouseEvent) => {
+      if (!isMinThumbDraggingRef.current && !isMaxThumbDraggingRef.current) {
+        return;
+      }
 
-    window.addEventListener(
-      "mouseup",
-      () => {
+      const {
+        rangeBarRef,
+        min,
+        max,
+        minValue,
+        maxValue,
+        onMinChange,
+        onMaxChange,
+      } = savedProps.current;
+
+      const rangeBar = rangeBarRef.current;
+      if (!rangeBar || barWidth === 0) return;
+
+      const barRect = rangeBar.getBoundingClientRect();
+      const offsetX = event.clientX - barRect.left;
+      const newPercentage = Math.max(0, Math.min(offsetX / barRect.width, 1));
+      const range = max - min;
+      const newValue = Math.round(min + newPercentage * range);
+
+      if (isMinThumbDraggingRef.current) {
+        const clampedValue = Math.min(newValue, maxValue);
+        onMinChange(clampedValue);
+      } else if (isMaxThumbDraggingRef.current) {
+        const clampedValue = Math.max(newValue, minValue);
+        onMaxChange(clampedValue);
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (isMinThumbDraggingRef.current || isMaxThumbDraggingRef.current) {
         isMinThumbDraggingRef.current = false;
         isMaxThumbDraggingRef.current = false;
-      },
-      { signal: controller.signal },
-    );
+        setIsDragging(false);
 
-    window.addEventListener(
-      "mousemove",
-      (event) => {
-        const rangeBar = rangeBarRef.current;
-        if (!rangeBar) return;
+        savedProps.current.onDragEnd?.();
+      }
+    };
 
-        const barRect = rangeBar.getBoundingClientRect();
-
-        if (isMinThumbDraggingRef.current) {
-          const offsetX = event.clientX - barRect.left;
-          let newPosition = offsetX - minThumbStartXRef.current;
-          newPosition = Math.max(0, Math.min(newPosition, maxThumbPositionX));
-          setMinThumbPercent(newPosition / barWidth);
-        }
-
-        if (isMaxThumbDraggingRef.current) {
-          const offsetX = event.clientX - barRect.left;
-          let newPosition = offsetX - maxThumbStartXRef.current;
-          newPosition = Math.max(
-            minThumbPositionX,
-            Math.min(newPosition, barWidth),
-          );
-          setMaxThumbPercent(newPosition / barWidth);
-        }
-      },
-      {
-        signal: controller.signal,
-      },
-    );
+    const controller = new AbortController();
+    window.addEventListener("mousemove", handleMouseMove, {
+      signal: controller.signal,
+    });
+    window.addEventListener("mouseup", handleMouseUp, {
+      signal: controller.signal,
+    });
 
     return () => {
       controller.abort();
     };
-  }, [minThumbPositionX, maxThumbPositionX, barWidth, rangeBarRef]);
+  }, [barWidth]);
+
+  const positions = useMemo(() => {
+    const range = max - min;
+    if (range === 0 || barWidth === 0) {
+      return { minThumbPx: 0, maxThumbPx: 0 };
+    }
+    const minPercent = (minValue - min) / range;
+    const maxPercent = (maxValue - min) / range;
+    return {
+      minThumbPx: minPercent * barWidth,
+      maxThumbPx: maxPercent * barWidth,
+    };
+  }, [minValue, maxValue, min, max, barWidth]);
+
+  const handleMinMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    isMinThumbDraggingRef.current = true;
+    setIsDragging(true);
+  };
+
+  const handleMaxMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    isMaxThumbDraggingRef.current = true;
+    setIsDragging(true);
+  };
 
   return {
+    isDragging,
     position: {
       inPixels: {
-        maxThumb: maxThumbPositionX,
-        minThumb: minThumbPositionX,
-      },
-      inPercentages: {
-        maxThumb: Math.round(maxThumbPercent * 100),
-        minThumb: Math.round(minThumbPercent * 100),
+        maxThumb: positions.maxThumbPx,
+        minThumb: positions.minThumbPx,
       },
     },
     events: {
       mouseDown: {
-        maxThumb: (event: MouseEvent<HTMLDivElement>) => {
-          event.preventDefault();
-
-          isMaxThumbDraggingRef.current = true;
-
-          const barRect = rangeBarRef.current?.getBoundingClientRect();
-          if (!barRect) return;
-
-          maxThumbStartXRef.current =
-            event.clientX - barRect.left - maxThumbPositionX;
-        },
-        minThumb: (event: MouseEvent<HTMLDivElement>) => {
-          event.preventDefault();
-          isMinThumbDraggingRef.current = true;
-
-          const barRect = rangeBarRef.current?.getBoundingClientRect();
-          if (!barRect) return;
-
-          minThumbStartXRef.current =
-            event.clientX - barRect.left - minThumbPositionX;
-        },
+        maxThumb: handleMaxMouseDown,
+        minThumb: handleMinMouseDown,
       },
     },
   };
