@@ -4,6 +4,9 @@ import { z } from "zod";
 
 const roleSchema = z
   .enum([DB_USER_ROLE.toString(), DB_TEACHER_ROLE.toString()])
+  .nullable()
+  .default(() => DB_USER_ROLE.toString())
+  .refine((value) => (value === null ? DB_USER_ROLE.toString() : value))
   .refine((value) => value, { message: ROLE_IS_REQUIRED });
 
 export default roleSchema;

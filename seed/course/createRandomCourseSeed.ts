@@ -6,6 +6,7 @@ import { createImage } from "@seed/helpers/createImage";
 import { createNewCourseSeed } from "./createNewCourseSeed";
 import { createVideo } from "@seed/helpers/createVideo";
 import { addVideoToCourse } from "./addVideoToCourse";
+import { createRatings } from "./createRatings";
 
 export const createRandomCourseSeed = async () => {
   console.log("Seeding Courses...");
@@ -42,6 +43,14 @@ export const createRandomCourseSeed = async () => {
       userId: teacher.id,
       categoryId: category,
     });
+
+    const usersForRating = Array.from({ length: teacher.id }).map((_, i) => ({
+      userId: i + 1,
+      rating: faker.number.int({ min: 1, max: 5 }),
+      courseId: course.id,
+    }));
+
+    await createRatings({ usersRatings: usersForRating });
 
     const randomNumber = faker.number.int({ min: 1, max: 5 });
     for (let i = 0; i < randomNumber; i++) {

@@ -1,5 +1,6 @@
 "use client";
 
+import Rating from "@/components/features/course/Rating";
 import Filters from "@/components/features/dashboard/Filters";
 import Loader from "@/components/icons/Loader";
 import { useGetParams } from "@/features/dashboard/hooks/useGetParams";
@@ -52,8 +53,12 @@ export default function DashboardPage() {
               <p className="text-secondary-text text-xs hover:underline line-clamp-4">
                 {course.description}
               </p>
-              <div>rating</div>
-              <p>{course?.price || "Free"}</p>
+              <div className="mt-auto">
+                <div className="inline-flex gap-2">
+                  <Rating avgRating={course.avgRating || 0} />
+                </div>
+                <p>{`${course?.price}$` || "Free"}</p>
+              </div>
             </Link>
           ))}
           {!!!courses?.courses?.length && (

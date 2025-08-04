@@ -1,5 +1,8 @@
 import { handlePromiseServer } from "@/helpers/handlePromiseServer";
 import prisma from "@/lib/prisma";
+import filtersSchema from "@/schemas/filters.schema";
+import orderBy from "lodash/orderBy";
+import { SchemaType } from "@/types/shared/schema";
 
 class GetService {
   static getUserCredentialsByLogin = (login: string) =>
@@ -34,55 +37,90 @@ class GetService {
         },
       }),
     );
-  // static getCourses = ({
-  //   search,
-  //   price,
-  //   category,
-  //   rating,
-  //   sortBy,
-  // }: SchemaType<typeof filtersSchema>) =>
-  //   handlePromiseServer(() =>
-  //     prisma.course.findMany({
-  //       where: {
-  //         name: {
-  //           contains: search,
-  //         },
-  //         price: {
-  //           lte: price?.[0],
-  //           gte: price?.[1],
-  //         },
-  //         category: {
-  //           contains: category,
-  //         },
-  //         CourseRating: {
-  //           some: {
-  //             rating: {
-  //               in: rating,
-  //             },
-  //           },
-  //         },
-  //       },
-  //       include: {
-  //         thumbnail: {
-  //           select: { url: true },
-  //         },
-  //         CourseRating: true,
-  //       },
-  //       orderBy:
-  //         sortBy === "price"
-  //           ? {
-  //               price: "desc",
-  //             }
-  //           : sortBy === "newest" ? {createdAt: "asc"} : sortBy: ==="oldest" ? {createdAt: "desc"} : undefined,
-  //     }),
-  //   );
-}
+  static getCourses = async ({
+    search,
+    price,
+    category,
+    rating,
+    sortBy,
+  }: SchemaType<typeof filtersSchema>) => {
+    const [err, courses] = await handlePromiseServer(() =>
+      prisma.course.findMany({
+        where: {
+          name: search
+            ? {
+                contains: search,
+              }
+            : {},
+          price: price
+            ? {
+                gte: price?.[0],
+                lte: price?.[1],
+              }
+            : {},
+          categories: category
+            ? { some: { category: { name: { contains: category } } } }
+            : {},
+          CourseRating: rating
+            ? {
+                some: {
+                  rating: {
+                    in: rating,
+                  },
+                },
+              }
+            : {},
+        },
+        include: {
+          thumbnail: {
+            select: { url: true },
+          },
+        },
+        orderBy:
+          sortBy === "price"
+            ? { price: "desc" }
+            : sortBy === "newest"
+              ? { createdAt: "desc" }
+              : sortBy === "oldest"
+                ? { createdAt: "asc" }
+                : undefined,
+      }),
+    );
+    if (err) return { err: err, courses: null };
 
-// const sortOptions: RadioOption[] = [
-//   { title: "price", value: "price" },
-//   { title: "newest", value: "newest" },
-//   { title: "oldest", value: "oldest" },
-//   { title: "rating", value: "rating" },
-// ];
+    const [error, groupResult] = await handlePromiseServer(() =>
+      prisma.courseRating.groupBy({
+        by: ["courseId"],
+        where: {
+          courseId: {
+            in: courses!.map((course) => course.id),
+          },
+        },
+        _avg: { rating: true },
+      }),
+    );
+
+    if (error) return { err: error, courses: null };
+
+    const groupMap = new Map(
+      groupResult!.map((res) => [res.courseId, res._avg]),
+    );
+
+    const coursesWithRating = courses!.map((course) => ({
+      ...course,
+      avgRating: groupMap.get(course.id)?.rating || 0,
+    }));
+
+    const sortedCourses =
+      sortBy === "rating"
+        ? orderBy(coursesWithRating, ["avgRating"], ["desc"])
+        : coursesWithRating;
+
+    return {
+      err: null,
+      courses: sortedCourses,
+    };
+  };
+}
 
 export default GetService;

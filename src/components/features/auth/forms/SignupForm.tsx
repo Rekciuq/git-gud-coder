@@ -30,6 +30,9 @@ const SignupForm = () => {
         router.refresh();
         ToastEmitter.success("Signed up successfully!");
       },
+      onSuccess() {
+        router.refresh();
+      },
     }),
   );
 
