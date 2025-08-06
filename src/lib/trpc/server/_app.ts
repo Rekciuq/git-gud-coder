@@ -5,6 +5,7 @@ import { authRouter } from "./routers/auth";
 import { ResponseMetaFn } from "@trpc/server/http";
 import { userRouter } from "./routers/user";
 import { courseRouter } from "./routers/course";
+import { filterRouter } from "./routers/filter";
 
 export const appRouter = createTRPCRouter({
   image: imageRouter,
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   auth: authRouter,
   user: userRouter,
   course: courseRouter,
+  filter: filterRouter,
 });
 
 export const responseMeta: ResponseMetaFn<AppRouter> = ({ ctx }) => {

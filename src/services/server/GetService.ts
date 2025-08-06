@@ -128,6 +128,8 @@ class GetService {
       courses: filteredRating,
     };
   };
+
+  static getCategories = () => prisma.category.findMany();
 }
 
 export default GetService;
