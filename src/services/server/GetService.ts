@@ -116,9 +116,16 @@ class GetService {
         ? orderBy(coursesWithRating, ["avgRating"], ["desc"])
         : coursesWithRating;
 
+    const capMaxRating = 5;
+    const maxRating = rating ? Math.max(...rating) : capMaxRating;
+
+    const filteredRating = sortedCourses.filter(
+      (course) => course.avgRating <= maxRating,
+    );
+
     return {
       err: null,
-      courses: sortedCourses,
+      courses: filteredRating,
     };
   };
 }

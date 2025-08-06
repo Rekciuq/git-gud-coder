@@ -1,6 +1,7 @@
 "use client";
 
 import Form from "@/components/shared/form/Form";
+import { MAX_PRICE, MIN_PRICE } from "@/constants/schemas/filters/values";
 import { useGetParams } from "@/features/dashboard/hooks/useGetParams";
 import { useSetParams } from "@/features/dashboard/hooks/useSetParams";
 import filtersSchema from "@/schemas/filters.schema";
@@ -12,7 +13,6 @@ const Filters = () => {
   const setParams = useSetParams();
   const existingParams = useGetParams();
 
-  console.log("existingParams", existingParams);
   const parsedSchema = filtersFormSchema.safeParse({
     ...existingParams,
     rating: existingParams?.rating?.map(String),
@@ -20,7 +20,6 @@ const Filters = () => {
     maxPrice: existingParams?.price?.[1] || undefined,
   });
   const defaultValues = parsedSchema.success ? parsedSchema.data : {};
-  console.log(defaultValues);
 
   const sortOptions: RadioOption[] = [
     { title: "price", value: "price" },
@@ -51,7 +50,7 @@ const Filters = () => {
           category: value.category || undefined,
           price:
             value.minPrice || value.maxPrice
-              ? [value!.minPrice!, value!.maxPrice!]
+              ? [value!.minPrice! || MIN_PRICE, value!.maxPrice! || MAX_PRICE]
               : undefined,
         };
 

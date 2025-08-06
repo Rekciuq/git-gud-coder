@@ -13,7 +13,7 @@ export default function DashboardPage() {
   const params = useGetParams();
   const trpc = useTRPC();
 
-  const { data: courses } = useQuery(
+  const { data: courses, isLoading } = useQuery(
     trpc.course.getCourses.queryOptions(params),
   );
 
@@ -61,9 +61,14 @@ export default function DashboardPage() {
               </div>
             </Link>
           ))}
-          {!!!courses?.courses?.length && (
+          {!!!courses?.courses?.length && isLoading && (
             <div className="w-full h-full flex justify-center items-center pt-100">
               <Loader className="text-primary-text max-w-25" />
+            </div>
+          )}
+          {!!!courses?.courses?.length && !isLoading && (
+            <div className="w-full text-center text-2xl text-primary-text mt-10">
+              <h2>No results were found</h2>
             </div>
           )}
         </div>

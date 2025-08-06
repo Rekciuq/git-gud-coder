@@ -1,3 +1,4 @@
+import { MAX_PRICE, MIN_PRICE } from "@/constants/schemas/filters/values";
 import { z } from "zod";
 
 const allowedRatings = ["1", "2", "3", "4", "5"] as const;
@@ -8,22 +9,14 @@ const filtersFormSchema = z.object({
     .optional()
     .nullable()
     .transform((value) => (value === null ? undefined : value)),
-  rating: z
-    .preprocess(
-      (val) => {
-        if (typeof val === "boolean" || val == null) return [];
-        return val;
-      },
-      z.array(z.enum(allowedRatings)).optional(),
-    )
-    .optional(),
+  rating: z.array(z.enum(allowedRatings)).optional(),
   category: z
     .string()
     .optional()
     .nullable()
     .transform((value) => (value === null ? undefined : value)),
-  minPrice: z.coerce.number().optional(),
-  maxPrice: z.coerce.number().optional(),
+  minPrice: z.number().default(MIN_PRICE).optional(),
+  maxPrice: z.number().default(MAX_PRICE).optional(),
 });
 
 export default filtersFormSchema;
