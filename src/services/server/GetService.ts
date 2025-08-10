@@ -33,6 +33,11 @@ class GetService {
               url: true,
             },
           },
+          CourseUser: {
+            select: {
+              courseId: true,
+            },
+          },
         },
       }),
     );

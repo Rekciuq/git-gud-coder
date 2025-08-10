@@ -10,6 +10,7 @@ type SharedUser = {
   lastName?: string | null | undefined;
   email?: string | undefined;
   roleId?: number | undefined;
+  CourseUser?: { courseId: number }[];
 };
 
 type UserStore = {

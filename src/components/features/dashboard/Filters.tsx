@@ -9,8 +9,10 @@ import filtersSchema from "@/schemas/filters.schema";
 import filtersFormSchema from "@/schemas/filtersForm.schema";
 import { CheckBoxOption, RadioOption } from "@/types/shared/form/field";
 import { SchemaType } from "@/types/shared/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { memo } from "react";
+import { memo, useMemo } from "react";
+import { FieldValues, useForm } from "react-hook-form";
 
 const Filters = () => {
   const setParams = useSetParams();
@@ -24,7 +26,9 @@ const Filters = () => {
     maxPrice: existingParams?.price?.[1] || undefined,
   });
 
-  const defaultValues = parsedSchema.success ? parsedSchema.data : {};
+  const defaultValues = useMemo(() => {
+    return parsedSchema.success ? parsedSchema.data : {};
+  }, [parsedSchema.success, parsedSchema.data]);
 
   const sortOptions: RadioOption[] = [
     { title: "price", value: "price" },
@@ -43,11 +47,17 @@ const Filters = () => {
 
   const { data: category } = useQuery(tRPC.filter.getCategories.queryOptions());
 
+  const form = useForm<FieldValues>({
+    resolver: zodResolver(filtersFormSchema, {}, { mode: "sync" }),
+    mode: "all",
+    defaultValues,
+  });
+
   return (
     <Form
       className="h-fit sticky border border-primary-text p-2 top-15"
+      methods={form}
       schema={filtersFormSchema}
-      defaultValues={defaultValues}
       handleSubmit={(value) => {
         const params: SchemaType<typeof filtersSchema> = {
           sortBy: value.sortBy || undefined,
@@ -95,7 +105,19 @@ const Filters = () => {
         label="Price Range:"
       />
       <div className="inline-flex justify-between w-full mt-2">
-        <Form.Submit type="reset" isFilterForm />
+        <Form.Submit
+          type="reset"
+          onClick={() => {
+            form.reset();
+            setParams({
+              sortBy: undefined,
+              search: undefined,
+              price: undefined,
+              rating: undefined,
+              category: undefined,
+            }).refresh();
+          }}
+        />
         <Form.Submit type="apply" />
       </div>
     </Form>

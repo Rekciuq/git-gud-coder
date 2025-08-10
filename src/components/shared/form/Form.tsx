@@ -1,10 +1,16 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+import {
+  useForm,
+  FormProvider,
+  SubmitHandler,
+  UseFormReturn,
+} from "react-hook-form";
 import { ZodSchema } from "zod";
 import FormSubmitButton from "./FormSubmitButton";
 import TextField from "./fields/TextField";
+import isEqual from "lodash/isEqual";
 import PasswordField from "./fields/PasswordField";
 import ImageField from "./fields/ImageField";
 import RadioField from "./fields/RadioField";
@@ -19,6 +25,7 @@ type FormProps<T extends ZodSchema> = {
   defaultValues?: SchemaType<T>;
   children: React.ReactNode;
   className?: string;
+  methods?: UseFormReturn<SchemaType<T>>;
 };
 
 const Form = <T extends ZodSchema>({
@@ -27,21 +34,27 @@ const Form = <T extends ZodSchema>({
   defaultValues,
   children,
   className,
+  methods,
 }: FormProps<T>) => {
-  const methods = useForm<SchemaType<T>>({
+  const form = useForm<SchemaType<T>>({
     resolver: zodResolver(schema, {}, { mode: "sync" }),
     mode: "all",
     defaultValues,
   });
+  const finalForm = methods ? methods : form;
 
   useEffect(() => {
     if (!defaultValues) return;
-    methods.reset(defaultValues);
-  }, [defaultValues, methods]);
+    if (!isEqual(finalForm.getValues(), defaultValues))
+      finalForm.reset(defaultValues);
+  }, [defaultValues, finalForm]);
 
   return (
-    <FormProvider {...methods}>
-      <form className={className} onSubmit={methods.handleSubmit(handleSubmit)}>
+    <FormProvider {...finalForm}>
+      <form
+        className={className}
+        onSubmit={finalForm.handleSubmit(handleSubmit)}
+      >
         {children}
       </form>
     </FormProvider>

@@ -12,10 +12,13 @@ import { useEffect, useMemo, useRef } from "react";
 import { DEFAULT_PAGINATION_LIMIT } from "@/constants/schemas/pagination";
 import { cn } from "@/lib/cn";
 import CourseCard from "@/features/dashboard/components/CourseCard";
+import { useUserStore } from "@/context/UserProvider";
 
 export default function DashboardPage() {
   const params = useGetParams();
   const trpc = useTRPC();
+  const usersCourses = useUserStore((state) => state.user.CourseUser);
+  const usersCoursesSet = new Set(usersCourses?.map((value) => value.courseId));
 
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -94,18 +97,22 @@ export default function DashboardPage() {
           >
             {virtualItems.map((virtualRow) => {
               const course = allRows[virtualRow.index];
+              if (!course) return;
 
+              const courseLink = usersCoursesSet.has(course.id)
+                ? `/course/${course.id}`
+                : `/course/${course.id}/enroll`;
               return (
                 <CourseCard
                   key={virtualRow.key}
                   itemHeight={virtualRow.size}
                   itemOffset={virtualRow.start}
-                  id={course?.id}
-                  thumbnailUrl={course?.thumbnail.url}
-                  name={course?.name}
-                  description={course?.description}
-                  avgRating={course?.avgRating}
-                  price={course?.price}
+                  linkUrl={courseLink}
+                  thumbnailUrl={course.thumbnail.url}
+                  name={course.name}
+                  description={course.description}
+                  avgRating={course.avgRating}
+                  price={course.price}
                 />
               );
             })}

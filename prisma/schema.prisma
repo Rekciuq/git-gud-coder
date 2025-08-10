@@ -23,6 +23,7 @@ model User {
   imageId      Int
   Course       Course[]
   CourseRating CourseRating[]
+  CourseUser   CourseUser[]
 }
 
 model Image {
@@ -86,6 +87,15 @@ model CourseCategory {
   @@unique([categoryId, courseId])
 }
 
+model CourseUser {
+  id Int @id @default(autoincrement())
+
+  userId   Int
+  courseId Int
+  user     User   @relation(fields: [userId], references: [id])
+  course   Course @relation(fields: [courseId], references: [id])
+}
+
 model Course {
   id          Int      @id @default(autoincrement())
   name        String
@@ -101,6 +111,7 @@ model Course {
   categories   CourseCategory[]
   price        Float
   CourseRating CourseRating[]
+  CourseUser   CourseUser[]
 }
 
 model CourseRating {

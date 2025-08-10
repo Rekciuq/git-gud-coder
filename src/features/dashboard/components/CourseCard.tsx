@@ -7,23 +7,23 @@ import { memo } from "react";
 type CourseCardProps = {
   itemHeight: number;
   itemOffset: number;
-  id?: number;
   thumbnailUrl?: string;
   name?: string;
   description?: string;
   avgRating?: number;
   price?: number;
+  linkUrl: string;
 };
 
 const CourseCard = ({
   itemHeight,
   itemOffset,
-  id,
   thumbnailUrl,
   name,
   description,
   avgRating,
   price,
+  linkUrl,
 }: CourseCardProps) => (
   <Link
     style={{
@@ -34,7 +34,7 @@ const CourseCard = ({
       "absolute top-0 left-0 w-full",
       "text-primary-text flex flex-col gap-2 hover:cursor-pointer border border-primary-text/90 hover:border-primary-text p-2 group",
     )}
-    href={`course/${id}`}
+    href={linkUrl}
   >
     {thumbnailUrl && (
       <div className="w-50 h-50 relative bg-white">
