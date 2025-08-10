@@ -10,6 +10,7 @@ import filtersFormSchema from "@/schemas/filtersForm.schema";
 import { CheckBoxOption, RadioOption } from "@/types/shared/form/field";
 import { SchemaType } from "@/types/shared/schema";
 import { useQuery } from "@tanstack/react-query";
+import { memo } from "react";
 
 const Filters = () => {
   const setParams = useSetParams();
@@ -87,7 +88,12 @@ const Filters = () => {
           })) || []
         }
       />
-      <Form.RangeField min={0} max={1500} name="price" label="Price Range:" />
+      <Form.RangeField
+        min={MIN_PRICE}
+        max={MAX_PRICE}
+        name="price"
+        label="Price Range:"
+      />
       <div className="inline-flex justify-between w-full mt-2">
         <Form.Submit type="reset" isFilterForm />
         <Form.Submit type="apply" />
@@ -96,4 +102,4 @@ const Filters = () => {
   );
 };
 
-export default Filters;
+export default memo(Filters);

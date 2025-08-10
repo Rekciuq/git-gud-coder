@@ -91,6 +91,7 @@ model Course {
   name        String
   description String
   createdAt   DateTime @default(now())
+  avgRating   Float    @default(0)
 
   videos       Video[]
   thumbnail    Image            @relation(fields: [thumbnailId], references: [id])

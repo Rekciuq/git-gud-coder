@@ -1,8 +1,7 @@
 import { handlePromiseServer } from "@/helpers/handlePromiseServer";
 import prisma from "@/lib/prisma";
-import filtersSchema from "@/schemas/filters.schema";
-import orderBy from "lodash/orderBy";
 import { SchemaType } from "@/types/shared/schema";
+import filtersWithPaginationSchema from "@/schemas/filtersWithPagination.schema";
 
 class GetService {
   static getUserCredentialsByLogin = (login: string) =>
@@ -38,38 +37,44 @@ class GetService {
       }),
     );
   static getCourses = async ({
-    search,
-    price,
-    category,
-    rating,
-    sortBy,
-  }: SchemaType<typeof filtersSchema>) => {
+    filters,
+    cursor,
+    limit,
+  }: SchemaType<typeof filtersWithPaginationSchema>) => {
     const [err, courses] = await handlePromiseServer(() =>
       prisma.course.findMany({
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        skip: cursor ? 1 : 0,
         where: {
-          name: search
+          name: filters.search
             ? {
-                contains: search,
+                contains: filters.search,
               }
             : {},
-          price: price
+          price: filters.price
             ? {
-                gte: price?.[0],
-                lte: price?.[1],
+                gte: filters.price?.[0],
+                lte: filters.price?.[1],
               }
             : {},
-          categories: category
-            ? { some: { category: { name: { contains: category } } } }
+          categories: filters.category
+            ? { some: { category: { name: { contains: filters.category } } } }
             : {},
-          CourseRating: rating
+          CourseRating: filters.rating
             ? {
                 some: {
                   rating: {
-                    in: rating,
+                    in: filters.rating,
                   },
                 },
               }
             : {},
+          avgRating: filters.rating
+            ? {
+                lte: Math.max(...filters.rating),
+              }
+            : undefined,
         },
         include: {
           thumbnail: {
@@ -77,55 +82,30 @@ class GetService {
           },
         },
         orderBy:
-          sortBy === "price"
-            ? { price: "desc" }
-            : sortBy === "newest"
-              ? { createdAt: "desc" }
-              : sortBy === "oldest"
-                ? { createdAt: "asc" }
-                : undefined,
+          filters.sortBy === "price"
+            ? [{ price: "desc" }, { id: "asc" }]
+            : filters.sortBy === "newest"
+              ? [{ createdAt: "desc" }, { id: "asc" }]
+              : filters.sortBy === "oldest"
+                ? [{ createdAt: "asc" }, { id: "asc" }]
+                : filters.sortBy === "rating"
+                  ? [{ avgRating: "desc" }, { id: "asc" }]
+                  : { id: "asc" },
       }),
     );
     if (err) return { err: err, courses: null };
 
-    const [error, groupResult] = await handlePromiseServer(() =>
-      prisma.courseRating.groupBy({
-        by: ["courseId"],
-        where: {
-          courseId: {
-            in: courses!.map((course) => course.id),
-          },
-        },
-        _avg: { rating: true },
-      }),
-    );
+    const hasMore = courses!.length > limit;
+    const paginatedCourses = hasMore ? courses!.slice(0, limit) : courses!;
 
-    if (error) return { err: error, courses: null };
-
-    const groupMap = new Map(
-      groupResult!.map((res) => [res.courseId, res._avg]),
-    );
-
-    const coursesWithRating = courses!.map((course) => ({
-      ...course,
-      avgRating: groupMap.get(course.id)?.rating || 0,
-    }));
-
-    const sortedCourses =
-      sortBy === "rating"
-        ? orderBy(coursesWithRating, ["avgRating"], ["desc"])
-        : coursesWithRating;
-
-    const capMaxRating = 5;
-    const maxRating = rating ? Math.max(...rating) : capMaxRating;
-
-    const filteredRating = sortedCourses.filter(
-      (course) => course.avgRating <= maxRating,
-    );
+    const nextCursor = hasMore
+      ? paginatedCourses[paginatedCourses.length - 1]?.id
+      : undefined;
 
     return {
       err: null,
-      courses: filteredRating,
+      courses: paginatedCourses,
+      cursor: nextCursor,
     };
   };
 

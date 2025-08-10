@@ -1,10 +1,10 @@
 import StarIcon from "@/components/icons/star/StarIcon";
+import { memo } from "react";
 
 type RatingProps = {
   avgRating: number;
 };
 
-// TODO: make it work properly to show fractions
 const Rating = ({ avgRating }: RatingProps) => {
   return (
     <div className="inline-flex gap-2 relative">
@@ -29,4 +29,4 @@ const Rating = ({ avgRating }: RatingProps) => {
   );
 };
 
-export default Rating;
+export default memo(Rating);
