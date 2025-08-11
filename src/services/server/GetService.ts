@@ -124,7 +124,19 @@ class GetService {
     };
   };
 
-  static getCategories = () => prisma.category.findMany();
+  static getCategories = () =>
+    handlePromiseServer(() => prisma.category.findMany());
+  static getEnrolledCourses = (userId: number) =>
+    handlePromiseServer(() =>
+      prisma.course.findMany({
+        where: { OR: [{ userId }, { CourseUser: { some: { userId } } }] },
+        include: {
+          thumbnail: {
+            select: { url: true },
+          },
+        },
+      }),
+    );
 }
 
 export default GetService;

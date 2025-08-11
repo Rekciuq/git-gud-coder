@@ -92,7 +92,7 @@ const Filters = () => {
         name="category"
         label="Category:"
         options={
-          category?.categories.map(({ name }) => ({
+          (category?.categories || []).map(({ name }) => ({
             title: name,
             value: name,
           })) || []

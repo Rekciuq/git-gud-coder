@@ -4,6 +4,7 @@ import { TRPCError } from "@trpc/server";
 import filtersWithPaginationSchema from "@/schemas/filtersWithPagination.schema";
 import { z } from "zod";
 import CreateService from "@/services/server/CreateService";
+import DeleteService from "@/services/server/DeleteService";
 
 export const courseRouter = createTRPCRouter({
   getCourseById: privateProcedure.input(z.number()).query(async ({ input }) => {
@@ -32,6 +33,14 @@ export const courseRouter = createTRPCRouter({
           message: err,
         });
     }),
+  getEnrolledCourses: privateProcedure
+    .input(z.number())
+    .query(async ({ input }) => {
+      const [err, courses] = await GetService.getEnrolledCourses(input);
+      if (err) throw new TRPCError({ code: "BAD_REQUEST", message: err });
+
+      return { courses };
+    }),
   getCourses: privateProcedure
     .input(filtersWithPaginationSchema)
     .query(async ({ input }) => {
@@ -56,5 +65,24 @@ export const courseRouter = createTRPCRouter({
         courses,
         nextCursor,
       };
+    }),
+  leaveCourse: privateProcedure
+    .input(z.object({ courseId: z.number(), userId: z.number() }))
+    .mutation(async ({ input }) => {
+      const { courseId, userId } = input;
+      const [err] = await DeleteService.leaveCourse(courseId, userId);
+
+      if (err)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: err,
+        });
+    }),
+  deleteCourse: privateProcedure
+    .input(z.number())
+    .mutation(async ({ input }) => {
+      const [err] = await DeleteService.deleteCourse(input);
+
+      if (err) throw new TRPCError({ code: "BAD_REQUEST", message: err });
     }),
 });

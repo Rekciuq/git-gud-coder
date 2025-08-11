@@ -3,6 +3,7 @@ import { memo } from "react";
 
 type RatingProps = {
   avgRating: number;
+  edit?: boolean;
 };
 
 const Rating = ({ avgRating }: RatingProps) => {
