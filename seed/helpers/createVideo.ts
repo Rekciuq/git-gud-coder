@@ -42,7 +42,7 @@ export const createVideo = async (
       index: videoIndex,
       description: videoDescription,
       lengthSec: lengthInSec,
-      url,
+      url: `${fileURL}/master.m3u8`,
     },
   });
 };

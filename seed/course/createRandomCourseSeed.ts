@@ -38,7 +38,12 @@ export const createRandomCourseSeed = async () => {
     const category = faker.number.int({ min: 1, max: 3 });
 
     const course = await createNewCourseSeed({
-      course: { name: courseName, description: courseDescription, price },
+      course: {
+        name: courseName,
+        description: courseDescription,
+        price,
+        avgRating: 0,
+      },
       thumbnailId: imageId,
       userId: teacher.id,
       categoryId: category,

@@ -18,6 +18,8 @@ import CheckBoxesField from "./fields/CheckBoxesField";
 import { SchemaType } from "@/types/shared/schema";
 import RangeField from "./fields/RangeField";
 import { useEffect } from "react";
+import TextAreaField from "./fields/TextAreaField";
+import NumberField from "./fields/NumberField";
 
 type FormProps<T extends ZodSchema> = {
   handleSubmit: SubmitHandler<SchemaType<T>>;
@@ -62,6 +64,8 @@ const Form = <T extends ZodSchema>({
 };
 
 Form.TextField = TextField;
+Form.NumberField = NumberField;
+Form.TextAreaField = TextAreaField;
 Form.PasswordField = PasswordField;
 Form.ImageField = ImageField;
 Form.RadioField = RadioField;

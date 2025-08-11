@@ -48,6 +48,15 @@ class GetService {
         include: {
           thumbnail: { select: { url: true } },
           user: { select: { firstName: true, lastName: true, email: true } },
+          videos: {
+            select: {
+              url: true,
+              lengthSec: true,
+              name: true,
+              description: true,
+              thumbnail: { select: { url: true } },
+            },
+          },
         },
       }),
     );
