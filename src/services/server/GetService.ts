@@ -41,6 +41,16 @@ class GetService {
         },
       }),
     );
+  static getCourseById = (id: number) =>
+    handlePromiseServer(() =>
+      prisma.course.findUnique({
+        where: { id },
+        include: {
+          thumbnail: { select: { url: true } },
+          user: { select: { firstName: true, lastName: true, email: true } },
+        },
+      }),
+    );
   static getCourses = async ({
     filters,
     cursor,

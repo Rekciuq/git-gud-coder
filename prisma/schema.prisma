@@ -88,12 +88,15 @@ model CourseCategory {
 }
 
 model CourseUser {
-  id Int @id @default(autoincrement())
+  id                 Int   @id @default(autoincrement())
+  progressPercentage Float @default(0)
 
   userId   Int
   courseId Int
   user     User   @relation(fields: [userId], references: [id])
   course   Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
 }
 
 model Course {

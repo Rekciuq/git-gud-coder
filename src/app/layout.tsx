@@ -5,9 +5,9 @@ import { ReactNode } from "react";
 import Notify from "@/components/features/setup/Notify";
 import { TRPCReactProvider } from "@/lib/trpc/client/client";
 import { cookies } from "next/headers";
-import { appRouter } from "@/lib/trpc/server/_app";
 import UserProvider from "@/context/UserProvider";
 import { ACCESS_TOKEN } from "@/constants/server/jwt";
+import { getServerCaller } from "@/lib/trpc/server/caller";
 
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-get-brains-mono",
@@ -26,22 +26,9 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
 
-  const requestHeaders = new Headers();
   const accessToken = cookieStore.get(ACCESS_TOKEN);
 
-  if (cookieStore) {
-    const cookieString = cookieStore
-      .getAll()
-      .map(({ name, value }) => `${name}=${value}`)
-      .join("; ");
-
-    requestHeaders.set("Cookie", cookieString);
-  }
-
-  const caller = appRouter.createCaller({
-    headers: requestHeaders,
-    responseHeaders: new Headers(),
-  });
+  const caller = await getServerCaller();
 
   const user = accessToken ? await caller.user.getUser() : null;
 

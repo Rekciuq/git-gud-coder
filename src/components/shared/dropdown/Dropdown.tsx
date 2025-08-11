@@ -6,7 +6,12 @@ import CaretUpIcon from "@/components/icons/caret/CaretUpIcon";
 
 type DropdownProps = {
   children: React.ReactNode;
-  options: { title: string; href?: string; onClick?: () => void }[];
+  options: {
+    title: string;
+    href?: string;
+    onClick?: () => void;
+    className?: string;
+  }[];
 };
 
 const Dropdown = ({ children, options = [] }: DropdownProps) => {
@@ -39,13 +44,21 @@ const Dropdown = ({ children, options = [] }: DropdownProps) => {
         >
           {options.map((opt) =>
             opt?.href ? (
-              <Link key={opt.title} href={opt.href} onClick={opt?.onClick}>
+              <Link
+                key={opt.title}
+                href={opt.href}
+                className={opt.className}
+                onClick={opt?.onClick}
+              >
                 {opt.title}
               </Link>
             ) : (
               <p
                 key={opt.title}
-                className="text-link block hover:text-link-alt p-2 underline"
+                className={cn(
+                  "text-link block hover:text-link-alt p-2 underline",
+                  opt.className,
+                )}
                 onClick={opt?.onClick}
               >
                 {opt.title}

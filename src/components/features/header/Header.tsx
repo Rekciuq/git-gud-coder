@@ -5,8 +5,10 @@ import { logoutAction } from "@/serverActions/logout";
 import ToastEmitter from "@/services/client/ToastEmitter";
 import Search from "./Search";
 import Breadcrumbs from "./Breadcrumbs";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
+  const router = useRouter();
   return (
     <div>
       <div className="p-2 flex justify-between items-center gap-10">
@@ -20,11 +22,18 @@ const Header = () => {
         <Dropdown
           options={[
             {
+              title: "My courses",
+              onClick() {
+                router.push("/my-courses");
+              },
+            },
+            {
               title: "logout",
               onClick() {
                 logoutAction();
                 ToastEmitter.success("Logged out!");
               },
+              className: "text-alert-error hover:text-alert-error/90",
             },
           ]}
         >

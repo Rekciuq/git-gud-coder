@@ -76,7 +76,7 @@ export default function DashboardPage() {
   ]);
 
   return (
-    <div className="w-full h-full flex">
+    <div className="w-full flex">
       <div className="p-2 mt-2 ml-2 relative">
         <Filters />
       </div>

@@ -39,6 +39,10 @@ class CreateService {
         },
       }),
     );
+  static createEnrolledUserCourse = (userId: number, courseId: number) =>
+    handlePromiseServer(() =>
+      prisma.courseUser.create({ data: { userId, courseId } }),
+    );
 }
 
 export default CreateService;
