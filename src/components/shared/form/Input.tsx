@@ -74,8 +74,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const { ref: hookFormRef, ...rest } = register(name, {
       onChange: handleChange,
-      min,
-      max,
+      ...(type === "number" && { min, max }),
     });
 
     return (

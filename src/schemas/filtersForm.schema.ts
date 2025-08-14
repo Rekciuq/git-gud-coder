@@ -8,7 +8,12 @@ const filtersFormSchema = z.object({
     .optional()
     .nullable()
     .transform((value) => (value === null ? undefined : value)),
-  rating: z.array(z.enum(allowedRatings)).optional(),
+  rating: z
+    .preprocess(
+      (value) => (typeof value === "boolean" ? [] : value),
+      z.array(z.enum(allowedRatings)),
+    )
+    .optional(),
   category: z
     .string()
     .optional()
