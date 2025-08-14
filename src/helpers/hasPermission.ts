@@ -3,7 +3,7 @@ export type RBACPermission = (typeof ROLES)[RBACRole][number];
 
 const ROLES = {
   admin: ["view:profile"],
-  teacher: ["view:profile", "view:chats"],
+  teacher: ["create:course", "update:course", "delete:course"],
   user: ["view:profile", "view:chats"],
 } as const;
 

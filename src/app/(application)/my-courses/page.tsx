@@ -4,6 +4,7 @@ import Loader from "@/components/icons/Loader";
 import Button from "@/components/shared/Button";
 import { useUserStore } from "@/context/UserProvider";
 import CourseCard from "@/features/user-dashboard/CourseCard";
+import { hasPermission } from "@/helpers/hasPermission";
 import { useTRPC } from "@/lib/trpc/client/client";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -21,11 +22,13 @@ export default function UserDashboardPage() {
     <div className="p-2 text-primary-text">
       <div className="w-full inline-flex justify-between">
         <h1 className="text-2xl">My Courses</h1>
-        <Button
-          type="submit"
-          label="Create new course"
-          onClick={() => router.push("/course/new")}
-        />
+        {user.roleId && hasPermission(user.roleId, "create:course") && (
+          <Button
+            type="submit"
+            label="Create new course"
+            onClick={() => router.push("/course/new")}
+          />
+        )}
       </div>
       {(enrolledCourses?.courses || []).map((course) => (
         <CourseCard
