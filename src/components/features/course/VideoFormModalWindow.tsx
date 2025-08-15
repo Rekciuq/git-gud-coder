@@ -24,7 +24,7 @@ const VideoFormModalWindow = ({
       <div className="w-150">
         <div className="inline-flex w-full justify-between items-center p-2">
           <h1 className="text-2xl">
-            {state.currentItem ? "Edit Video!" : "Add video!"}
+            {state.currentItem ? "Edit the Video!" : "Add the video!"}
           </h1>
           <CancelIcon
             className="w-8 h-8 cursor-pointer"
@@ -40,7 +40,7 @@ const VideoFormModalWindow = ({
             saveVideo({
               ...values,
               id: state.currentItem?.id || uuidv4(),
-              index: videosLength,
+              index: state.currentItem?.index || videosLength,
             });
             controls.setIsOpen(false);
           }}
@@ -50,7 +50,10 @@ const VideoFormModalWindow = ({
             <Form.TextField label="Description:" name="description" />
             <Form.FileField label="Thumbnail:" name="thumbnail" />
             <Form.FileField label="Video:" name="video" />
-            <Form.Submit type="submit" className="self-end mt-2" />
+            <Form.Submit
+              type={state.currentItem ? "update" : "submit"}
+              className="self-end mt-2"
+            />
           </div>
         </Form>
       </div>
