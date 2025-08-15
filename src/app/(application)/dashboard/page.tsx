@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const params = useGetParams();
   const trpc = useTRPC();
   const usersCourses = useUserStore((state) => state.user.CourseUser);
+  const userId = useUserStore((state) => state.user.id);
   const usersCoursesSet = new Set(usersCourses?.map((value) => value.courseId));
 
   const parentRef = useRef<HTMLDivElement>(null);
@@ -99,9 +100,10 @@ export default function DashboardPage() {
               const course = allRows[virtualRow.index];
               if (!course) return;
 
-              const courseLink = usersCoursesSet.has(course.id)
-                ? `/course/${course.id}`
-                : `/course/${course.id}/enroll`;
+              const courseLink =
+                usersCoursesSet.has(course.id) || course.userId === userId
+                  ? `/course/${course.id}`
+                  : `/course/${course.id}/enroll`;
               return (
                 <CourseCard
                   key={virtualRow.key}

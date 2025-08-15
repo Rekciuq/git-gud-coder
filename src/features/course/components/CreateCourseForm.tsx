@@ -15,6 +15,7 @@ import { uploadImageToBucket } from "@/features/file/helpers/uploadImageToBucket
 import { useUserStore } from "@/context/UserProvider";
 import ToastEmitter from "@/services/client/ToastEmitter";
 import { uploadVideoToBucket } from "@/features/file/helpers/uploadVideoToBucket";
+import { useRouter } from "next/navigation";
 
 export type VideoSchemaWithID = {
   id: string;
@@ -27,6 +28,7 @@ const CreateCourseForm = () => {
   const userId = useUserStore((state) => state.user.id);
   const { data: category } = useQuery(tRPC.filter.getCategories.queryOptions());
   const getPresignedUrlOptions = tRPC.upload.getPresignedUrl.queryOptions();
+  const router = useRouter();
 
   const { refetch: getPresignedUrl } = useQuery({
     ...getPresignedUrlOptions,
@@ -122,6 +124,7 @@ const CreateCourseForm = () => {
             });
           }
           ToastEmitter.success("Course created!");
+          router.push(`/course/${courseId}`);
         }}
         schema={courseSchema}
       >
