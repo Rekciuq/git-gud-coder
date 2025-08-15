@@ -10,12 +10,14 @@ import { ModalWindowControls } from "@/types/shared/modalWindow";
 
 type VideoFormModalWindowProps = {
   saveVideo: (video: VideoSchemaWithID) => void;
+  videosLength: number;
 } & ModalWindowControls<VideoSchemaWithID | null>;
 
 const VideoFormModalWindow = ({
   state,
   controls,
   saveVideo,
+  videosLength,
 }: VideoFormModalWindowProps) => {
   return (
     <ModalWindow state={state} controls={controls}>
@@ -35,7 +37,11 @@ const VideoFormModalWindow = ({
           className="p-2"
           schema={videoSchema}
           handleSubmit={(values) => {
-            saveVideo({ ...values, id: state.currentItem?.id || uuidv4() });
+            saveVideo({
+              ...values,
+              id: state.currentItem?.id || uuidv4(),
+              index: videosLength,
+            });
             controls.setIsOpen(false);
           }}
         >

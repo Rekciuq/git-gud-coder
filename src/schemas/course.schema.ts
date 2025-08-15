@@ -6,7 +6,7 @@ const courseSchema = z.object({
   name: stringSchema,
   description: z.string().trim(),
   thumbnail: imageSchema,
-  price: z.number().optional(),
+  price: z.string().optional(),
   category: z.string(),
 });
 

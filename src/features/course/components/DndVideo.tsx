@@ -30,6 +30,7 @@ const DndVideo = ({ video, deleteVideo, controls }: DndVideoProps) => {
         {...listeners}
         className="w-4 h-4 cursor-pointer active:cursor-grabbing"
       />
+      <p>{video.index + 1}.</p>
       <div className="w-full inline-flex items-center">
         <p>{video.name}</p>
         <EditIcon

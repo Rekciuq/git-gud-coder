@@ -12,6 +12,7 @@ import DndVideoList from "./DndVideoList";
 
 export type VideoSchemaWithID = {
   id: string;
+  index: number;
 } & SchemaType<typeof videoSchema>;
 
 const CreateCourseForm = () => {
@@ -38,7 +39,8 @@ const CreateCourseForm = () => {
   const removeVideo = (videoId: string) =>
     setVideos((prev) => prev.filter((prevVideo) => prevVideo.id !== videoId));
 
-  const updateVideosOrder = (videos: VideoSchemaWithID[]) => setVideos(videos);
+  const updateVideosOrder = (videos: VideoSchemaWithID[]) =>
+    setVideos(videos.map((video, index) => ({ ...video, index })));
 
   return (
     <>
@@ -46,10 +48,19 @@ const CreateCourseForm = () => {
         controls={modalControls.controls}
         state={modalControls.state}
         saveVideo={updateVideos}
+        videosLength={videos.length}
       />
       <Form
         handleSubmit={(values) => {
+          // cooly removing id from object
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const videosWithoutID = videos.map(({ id, ...rest }) => ({
+            ...rest,
+          }));
+
           console.log(values);
+          console.log(videos);
+          console.log(videosWithoutID);
         }}
         schema={courseSchema}
       >
@@ -68,7 +79,7 @@ const CreateCourseForm = () => {
                 Add Videos
               </ModalWindowButton>
             </div>
-            <div className="w-full h-50 overflow-auto border border-primary-text">
+            <div className="w-full min-h-50 max-h-70 overflow-auto border border-primary-text">
               <DndVideoList
                 videos={videos}
                 deleteVideo={removeVideo}
