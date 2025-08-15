@@ -1,7 +1,7 @@
 "use client";
 
 import Form from "@/components/shared/form/Form";
-import { useTRPC } from "@/lib/trpc/client/client";
+import { getQueryClient, useTRPC } from "@/lib/trpc/client/client";
 import loginSchema from "@/schemas/auth/login/login.schema";
 import ToastEmitter from "@/services/client/ToastEmitter";
 import { useMutation } from "@tanstack/react-query";
@@ -11,19 +11,19 @@ const LoginForm = () => {
   const trpc = useTRPC();
   const router = useRouter();
 
-  const { mutate, isPending } = useMutation(
-    trpc.auth.login.mutationOptions({
-      onSuccess() {
-        router.refresh();
-        ToastEmitter.success("Logged in successfully!");
-      },
-    }),
+  const queryClient = getQueryClient();
+
+  const { mutateAsync, isPending } = useMutation(
+    trpc.auth.login.mutationOptions(),
   );
 
   return (
     <Form
-      handleSubmit={(values) => {
-        mutate(values);
+      handleSubmit={async (values) => {
+        await mutateAsync(values);
+        await queryClient.invalidateQueries();
+        router.refresh();
+        ToastEmitter.success("Logged in successfully!");
       }}
       schema={loginSchema}
     >

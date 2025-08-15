@@ -2,9 +2,8 @@
 
 import Form from "@/components/shared/form/Form";
 import { DB_TEACHER_ROLE, DB_USER_ROLE } from "@/constants/database";
-import { FORM_DATA_KEYS } from "@/constants/formData";
-import { HTTP_METHODS } from "@/constants/server/http-methods";
-import { useTRPC } from "@/lib/trpc/client/client";
+import { uploadImageToBucket } from "@/features/file/helpers/uploadImageToBucket";
+import { getQueryClient, useTRPC } from "@/lib/trpc/client/client";
 import {
   clientSignupSchema,
   serverSignupSchema,
@@ -18,22 +17,15 @@ import { useRouter } from "next/navigation";
 const SignupForm = () => {
   const trpc = useTRPC();
   const router = useRouter();
+  const queryClient = getQueryClient();
   const getPresignedUrlOptions = trpc.upload.getPresignedUrl.queryOptions();
   const { refetch: getPresignedUrl } = useQuery({
     ...getPresignedUrlOptions,
     enabled: false,
   });
 
-  const { mutate: signupUser, isPending } = useMutation(
-    trpc.auth.signup.mutationOptions({
-      onMutate() {
-        router.refresh();
-        ToastEmitter.success("Signed up successfully!");
-      },
-      onSuccess() {
-        router.refresh();
-      },
-    }),
+  const { mutateAsync: signupUser, isPending } = useMutation(
+    trpc.auth.signup.mutationOptions({}),
   );
 
   const roles: RadioOption[] = [
@@ -44,19 +36,13 @@ const SignupForm = () => {
   return (
     <Form
       handleSubmit={async (values) => {
-        const formData = new FormData();
-        formData.append(FORM_DATA_KEYS.file, values.image);
-        const { data: presignedUrl, error } = await getPresignedUrl();
+        const { data: presignedUrl } = await getPresignedUrl();
 
         try {
-          if (!presignedUrl?.url) throw new Error(error?.message);
-          const res = await fetch(presignedUrl.url, {
-            method: HTTP_METHODS.post,
-            body: formData,
+          const imageUrl = await uploadImageToBucket({
+            presignedUrl: presignedUrl?.url,
+            file: values.image,
           });
-          if (!res.ok) throw new Error(await res.text());
-
-          const responseImageURL = await res.json();
 
           const { login, firstName, lastName, password, role } = values;
 
@@ -66,10 +52,13 @@ const SignupForm = () => {
             lastName,
             role,
             password,
-            imageUrl: responseImageURL.fileURL,
+            imageUrl,
           };
 
-          signupUser(newUser);
+          await signupUser(newUser);
+          await queryClient.invalidateQueries();
+          router.refresh();
+          ToastEmitter.success("Signed up successfully!");
         } catch (error) {
           if (!(error instanceof Error)) return;
 

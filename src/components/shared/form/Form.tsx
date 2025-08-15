@@ -20,6 +20,7 @@ import RangeField from "./fields/RangeField";
 import { useEffect } from "react";
 import TextAreaField from "./fields/TextAreaField";
 import NumberField from "./fields/NumberField";
+import FileField from "./fields/FileField";
 
 type FormProps<T extends ZodSchema> = {
   handleSubmit: SubmitHandler<SchemaType<T>>;
@@ -68,6 +69,7 @@ Form.NumberField = NumberField;
 Form.TextAreaField = TextAreaField;
 Form.PasswordField = PasswordField;
 Form.ImageField = ImageField;
+Form.FileField = FileField;
 Form.RadioField = RadioField;
 Form.CheckboxesField = CheckBoxesField;
 Form.RangeField = RangeField;
