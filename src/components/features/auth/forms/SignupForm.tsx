@@ -39,7 +39,7 @@ const SignupForm = () => {
         const { data: presignedUrl } = await getPresignedUrl();
 
         try {
-          const imageUrl = await uploadImageToBucket({
+          const { url: imageUrl, bucketId } = await uploadImageToBucket({
             presignedUrl: presignedUrl?.url,
             file: values.image,
           });
@@ -53,6 +53,7 @@ const SignupForm = () => {
             role,
             password,
             imageUrl,
+            bucketId,
           };
 
           await signupUser(newUser);

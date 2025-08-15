@@ -5,6 +5,7 @@ import filtersWithPaginationSchema from "@/schemas/filtersWithPagination.schema"
 import { z } from "zod";
 import CreateService from "@/services/server/CreateService";
 import DeleteService from "@/services/server/DeleteService";
+import courseServerSchema from "@/schemas/courseServer.schema";
 
 export const courseRouter = createTRPCRouter({
   getCourseById: privateProcedure.input(z.number()).query(async ({ input }) => {
@@ -77,6 +78,16 @@ export const courseRouter = createTRPCRouter({
           code: "BAD_REQUEST",
           message: err,
         });
+    }),
+  createCourse: privateProcedure
+    .input(courseServerSchema)
+    .mutation(async ({ input }) => {
+      const [err, response] = await CreateService.createCourse(input);
+      if (err) throw new TRPCError({ message: err, code: "BAD_REQUEST" });
+
+      return {
+        courseId: response?.id,
+      };
     }),
   deleteCourse: privateProcedure
     .input(z.number())

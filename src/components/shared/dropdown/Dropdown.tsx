@@ -39,7 +39,7 @@ const Dropdown = ({ children, options = [] }: DropdownProps) => {
       {isOpen && (
         <div
           className={cn(
-            "left-0 mt-8 absolute bg-panel-alt border border-primary-text w-full transition-opacity",
+            "left-0 mt-8 absolute z-10 bg-panel-alt border border-primary-text w-full transition-opacity",
           )}
         >
           {options.map((opt) =>

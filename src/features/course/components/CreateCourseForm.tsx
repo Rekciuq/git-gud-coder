@@ -1,3 +1,5 @@
+"use client";
+
 import VideoFormModalWindow from "@/components/features/course/VideoFormModalWindow";
 import Form from "@/components/shared/form/Form";
 import ModalWindowButton from "@/components/shared/modal-window/ModalWindowButton";
@@ -6,9 +8,13 @@ import { useTRPC } from "@/lib/trpc/client/client";
 import courseSchema from "@/schemas/course.schema";
 import videoSchema from "@/schemas/video.schema";
 import { SchemaType } from "@/types/shared/schema";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import DndVideoList from "./DndVideoList";
+import { uploadImageToBucket } from "@/features/file/helpers/uploadImageToBucket";
+import { useUserStore } from "@/context/UserProvider";
+import ToastEmitter from "@/services/client/ToastEmitter";
+import { uploadVideoToBucket } from "@/features/file/helpers/uploadVideoToBucket";
 
 export type VideoSchemaWithID = {
   id: string;
@@ -18,7 +24,21 @@ export type VideoSchemaWithID = {
 const CreateCourseForm = () => {
   const [videos, setVideos] = useState<VideoSchemaWithID[]>([]);
   const tRPC = useTRPC();
+  const userId = useUserStore((state) => state.user.id);
   const { data: category } = useQuery(tRPC.filter.getCategories.queryOptions());
+  const getPresignedUrlOptions = tRPC.upload.getPresignedUrl.queryOptions();
+
+  const { refetch: getPresignedUrl } = useQuery({
+    ...getPresignedUrlOptions,
+    enabled: false,
+  });
+
+  const { mutateAsync: createCourse } = useMutation(
+    tRPC.course.createCourse.mutationOptions(),
+  );
+  const { mutateAsync: createVideo } = useMutation(
+    tRPC.video.createVideo.mutationOptions(),
+  );
   const modalControls = useModalWindow<VideoSchemaWithID>();
 
   const updateVideos = (video: VideoSchemaWithID) => {
@@ -51,16 +71,57 @@ const CreateCourseForm = () => {
         videosLength={videos.length}
       />
       <Form
-        handleSubmit={(values) => {
-          // cooly removing id from object
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const videosWithoutID = videos.map(({ id, ...rest }) => ({
-            ...rest,
-          }));
+        handleSubmit={async (values) => {
+          const { data: presignedUrl } = await getPresignedUrl();
+          const { url, bucketId } = await uploadImageToBucket({
+            presignedUrl: presignedUrl?.url,
+            file: values.thumbnail,
+          });
 
-          console.log(values);
-          console.log(videos);
-          console.log(videosWithoutID);
+          const { courseId } = await createCourse({
+            name: values.name,
+            description: values.description,
+            category: category!.categories!.find(
+              (cat) => cat.name === values.category,
+            )!.id,
+            authorId: userId,
+            thumbnailUrl: url,
+            thumbnailBucketId: bucketId,
+          });
+
+          for await (const video of videos) {
+            const { data: thumbnailPresignedUrl } = await getPresignedUrl();
+            const { url: thumbnailUrl, bucketId: thumbnailBucketId } =
+              await uploadImageToBucket({
+                presignedUrl: thumbnailPresignedUrl?.url,
+                file: video.thumbnail,
+              });
+
+            if (!courseId) return;
+
+            const { data: videoPresignedUrl } = await getPresignedUrl();
+            const {
+              lengthInSec,
+              bucketId: bucketVideoId,
+              url: videoUrl,
+            } = await uploadVideoToBucket({
+              presignedUrl: videoPresignedUrl?.url,
+              file: video.video,
+            });
+
+            await createVideo({
+              thumbnailUrl,
+              thumbnailBucketId,
+              courseId: courseId,
+              name: video.name,
+              description: video.description,
+              bucketVideoId,
+              index: video.index,
+              lengthSec: lengthInSec,
+              url: videoUrl,
+            });
+          }
+          ToastEmitter.success("Course created!");
         }}
         schema={courseSchema}
       >

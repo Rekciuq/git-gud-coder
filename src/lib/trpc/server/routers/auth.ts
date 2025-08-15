@@ -77,13 +77,12 @@ export const authRouter = createTRPCRouter({
   }),
   signup: publicProcedure.input(serverSignupSchema).mutation(async (opts) => {
     const data = opts.input;
-    const bucketImageId = data.imageUrl.split("/").at(-1);
 
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     const cryptedPassword = bcrypt.hashSync(data.password, salt);
 
-    if (!bucketImageId) {
+    if (!data.bucketId) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: FETCH_IMAGE_ERROR,
@@ -91,7 +90,7 @@ export const authRouter = createTRPCRouter({
     }
 
     const [err, res] = await CreateService.createUserWithImage({
-      bucketImageId,
+      bucketImageId: data.bucketId,
       ...data,
       password: cryptedPassword,
     });

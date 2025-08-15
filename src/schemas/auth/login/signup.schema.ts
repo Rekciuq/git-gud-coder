@@ -33,4 +33,4 @@ export const serverSignupSchema = baseSignupSchema
     confirmPassword: true,
     image: true,
   })
-  .extend({ imageUrl: z.string() });
+  .extend({ imageUrl: z.string(), bucketId: z.string() });
